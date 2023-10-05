@@ -31,7 +31,7 @@ import "CXString.nim"
 
 const
   CINDEX_VERSION_MAJOR* = 0
-  CINDEX_VERSION_MINOR* = 60
+  CINDEX_VERSION_MINOR* = 61
 
 proc CINDEX_VERSION_ENCODE*(major, minor: cint): string =
   result = $(((major) * 10000) + ((minor) * 1))
@@ -1878,43 +1878,41 @@ type
                                   ##
     CXCursor_CXXFunctionalCastExpr = 128, ## * A C++ typeid expression (C++ [expr.typeid]).
                                        ##
-    CXCursor_CXXAddrspaceCastExpr = 129, ## * OpenCL's addrspace_cast<> expression.
-
-    CXCursor_CXXTypeidExpr = 130, ## * [C++ 2.13.5] C++ Boolean Literal.
+    CXCursor_CXXTypeidExpr = 129, ## * [C++ 2.13.5] C++ Boolean Literal.
                                ##
-    CXCursor_CXXBoolLiteralExpr = 131, ## * [C++0x 2.14.7] C++ Pointer Literal.
+    CXCursor_CXXBoolLiteralExpr = 130, ## * [C++0x 2.14.7] C++ Pointer Literal.
                                     ##
-    CXCursor_CXXNullPtrLiteralExpr = 132, ## * Represents the "this" expression in C++
+    CXCursor_CXXNullPtrLiteralExpr = 131, ## * Represents the "this" expression in C++
                                        ##
-    CXCursor_CXXThisExpr = 133, ## * [C++ 15] C++ Throw Expression.
+    CXCursor_CXXThisExpr = 132, ## * [C++ 15] C++ Throw Expression.
                              ##
                              ##  This handles 'throw' and 'throw' assignment-expression. When
                              ##  assignment-expression isn't present, Op will be null.
                              ##
-    CXCursor_CXXThrowExpr = 134, ## * A new expression for memory allocation and constructor calls, e.g:
+    CXCursor_CXXThrowExpr = 133, ## * A new expression for memory allocation and constructor calls, e.g:
                               ##  "new CXXNewExpr(foo)".
                               ##
-    CXCursor_CXXNewExpr = 135, ## * A delete expression for memory deallocation and destructor calls,
+    CXCursor_CXXNewExpr = 134, ## * A delete expression for memory deallocation and destructor calls,
                             ##  e.g. "delete[] pArray".
                             ##
-    CXCursor_CXXDeleteExpr = 136, ## * A unary expression. (noexcept, sizeof, or other traits)
+    CXCursor_CXXDeleteExpr = 135, ## * A unary expression. (noexcept, sizeof, or other traits)
                                ##
-    CXCursor_UnaryExpr = 137,   ## * An Objective-C string literal i.e. @"foo".
+    CXCursor_UnaryExpr = 136,   ## * An Objective-C string literal i.e. @"foo".
                            ##
-    CXCursor_ObjCStringLiteral = 138, ## * An Objective-C \@encode expression.
+    CXCursor_ObjCStringLiteral = 137, ## * An Objective-C \@encode expression.
                                    ##
-    CXCursor_ObjCEncodeExpr = 139, ## * An Objective-C \@selector expression.
+    CXCursor_ObjCEncodeExpr = 138, ## * An Objective-C \@selector expression.
                                 ##
-    CXCursor_ObjCSelectorExpr = 140, ## * An Objective-C \@protocol expression.
+    CXCursor_ObjCSelectorExpr = 139, ## * An Objective-C \@protocol expression.
                                   ##
-    CXCursor_ObjCProtocolExpr = 141, ## * An Objective-C "bridged" cast expression, which casts between
+    CXCursor_ObjCProtocolExpr = 140, ## * An Objective-C "bridged" cast expression, which casts between
                                   ##  Objective-C pointers and C pointers, transferring ownership in the process.
                                   ##
                                   ##  \code
                                   ##    NSString *str = (__bridge_transfer NSString *)CFCreateString();
                                   ##  \endcode
                                   ##
-    CXCursor_ObjCBridgedCastExpr = 142, ## * Represents a C++0x pack expansion that produces a sequence of
+    CXCursor_ObjCBridgedCastExpr = 141, ## * Represents a C++0x pack expansion that produces a sequence of
                                      ##  expressions.
                                      ##
                                      ##  A pack expansion expression contains a pattern (which itself is an
@@ -1927,7 +1925,7 @@ type
                                      ##  }
                                      ##  \endcode
                                      ##
-    CXCursor_PackExpansionExpr = 143, ## * Represents an expression that computes the length of a parameter
+    CXCursor_PackExpansionExpr = 142, ## * Represents an expression that computes the length of a parameter
                                    ##  pack.
                                    ##
                                    ##  \code
@@ -1937,7 +1935,7 @@ type
                                    ##  };
                                    ##  \endcode
                                    ##
-    CXCursor_SizeOfPackExpr = 144, ##  Represents a C++ lambda expression that produces a local function
+    CXCursor_SizeOfPackExpr = 143, ##  Represents a C++ lambda expression that produces a local function
                                 ##  object.
                                 ##
                                 ##  \code
@@ -1949,22 +1947,24 @@ type
                                 ##  }
                                 ##  \endcode
                                 ##
-    CXCursor_LambdaExpr = 145,  ## * Objective-c Boolean Literal.
+    CXCursor_LambdaExpr = 144,  ## * Objective-c Boolean Literal.
                             ##
-    CXCursor_ObjCBoolLiteralExpr = 146, ## * Represents the "self" expression in an Objective-C method.
+    CXCursor_ObjCBoolLiteralExpr = 145, ## * Represents the "self" expression in an Objective-C method.
                                      ##
-    CXCursor_ObjCSelfExpr = 147, ## * OpenMP 4.0 [2.4, Array Section].
+    CXCursor_ObjCSelfExpr = 146, ## * OpenMP 4.0 [2.4, Array Section].
                               ##
-    CXCursor_OMPArraySectionExpr = 148, ## * Represents an @available(...) check.
+    CXCursor_OMPArraySectionExpr = 147, ## * Represents an @available(...) check.
                                      ##
-    CXCursor_ObjCAvailabilityCheckExpr = 149, ## *
+    CXCursor_ObjCAvailabilityCheckExpr = 148, ## *
                                            ##  Fixed point literal
                                            ##
-    CXCursor_FixedPointLiteral = 150, ## * OpenMP 5.0 [2.1.4, Array Shaping].
+    CXCursor_FixedPointLiteral = 149, ## * OpenMP 5.0 [2.1.4, Array Shaping].
 
-    CXCursor_OMPArrayShapingExpr = 151,
+    CXCursor_OMPArrayShapingExpr = 150,
 
-    CXCursor_OMPIteratorExpr = 152, ## * OpenMP 5.0 [2.1.6 Iterators]
+    CXCursor_OMPIteratorExpr = 151, ## * OpenMP 5.0 [2.1.6 Iterators]
+
+    CXCursor_CXXAddrspaceCastExpr = 152, ## OpenCL's addrspace_cast<> expression.
 
     CXCursor_UnexposedStmt = 200, ## *
                                   ##  A statement whose specific kind is not exposed via this
@@ -2500,6 +2500,29 @@ proc getCursorPlatformAvailability*(cursor: CXCursor; always_deprecated: ptr cin
 
 proc disposeCXPlatformAvailability*(availability: ptr CXPlatformAvailability) {.
     importc: "clang_disposeCXPlatformAvailability", cdecl.}
+##*
+## If cursor refers to a variable declaration and it has initializer returns
+## cursor referring to the initializer otherwise return null cursor.
+##
+
+proc Cursor_getVarDeclInitializer*(cursor: CXCursor): CXCursor {.
+    importc: "clang_Cursor_getVarDeclInitializer", cdecl.}
+## *
+##  If cursor refers to a variable declaration that has global storage returns 1.
+##  If cursor refers to a variable declaration that doesn't have global storage
+##  returns 0. Otherwise returns -1.
+## 
+
+proc Cursor_hasVarDeclGlobalStorage*(cursor: CXCursor): cint {.
+    importc: "clang_Cursor_hasVarDeclGlobalStorage", cdecl.}
+## *
+##  If cursor refers to a variable declaration that has external storage
+##  returns 1. If cursor refers to a variable declaration that doesn't have
+##  external storage returns 0. Otherwise returns -1.
+## 
+
+proc Cursor_hasVarDeclExternalStorage*(cursor: CXCursor): cint {.
+    importc: "clang_Cursor_hasVarDeclExternalStorage", cdecl.}
 ## *
 ##  Describe the "language" of the entity referred to by a cursor.
 ##
@@ -3365,7 +3388,14 @@ type
     CXTypeNullability_Unspecified = 2, ## *
                                     ##  Nullability is not applicable to this type.
                                     ##
-    CXTypeNullability_Invalid = 3
+    CXTypeNullability_Invalid = 3,
+
+    CXTypeNullability_NullableResult = 4, ## *
+                                          ##  Generally behaves like Nullable, except when used in a block parameter that
+                                          ##  was imported into a swift async method. There, swift will assume that the
+                                          ##  parameter can get null even if no error occured. _Nullable parameters are
+                                          ##  assumed to only get null on error.
+                                          ##
 
 
 ## *
