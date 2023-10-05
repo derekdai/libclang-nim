@@ -1966,6 +1966,10 @@ type
 
     CXCursor_CXXAddrspaceCastExpr = 152, ## OpenCL's addrspace_cast<> expression.
 
+    CXCursor_ConceptSpecializationExpr = 153, ## Expression that references a C++20 concept.
+  
+    CXCursor_RequiresExpr = 154, ## Expression that references a C++20 concept.
+
     CXCursor_UnexposedStmt = 200, ## *
                                   ##  A statement whose specific kind is not exposed via this
                                   ##  interface.
@@ -2169,8 +2173,31 @@ type
   
     CXCursor_OMPGenericLoopDirective = 295, ## * OpenMP loop directive.
 
-    CXCursor_TranslationUnit = 300, ##  Attributes
+    CXCursor_OMPTeamsGenericLoopDirective = 296, ## OpenMP teams loop directive.
 
+    CXCursor_OMPTargetTeamsGenericLoopDirective = 297, ## OpenMP target teams loop directive.
+
+    CXCursor_OMPParallelGenericLoopDirective = 298, ## OpenMP parallel loop directive.
+
+    CXCursor_OMPTargetParallelGenericLoopDirective = 299, ## OpenMP target parallel loop directive.
+
+    CXCursor_OMPParallelMaskedDirective = 300, ## OpenMP parallel masked directive.
+
+    CXCursor_OMPMaskedTaskLoopDirective = 301, ## OpenMP masked taskloop directive.
+
+    CXCursor_OMPMaskedTaskLoopSimdDirective = 302, ## OpenMP masked taskloop simd directive.
+
+    CXCursor_OMPParallelMaskedTaskLoopDirective = 303, ## OpenMP parallel masked taskloop directive.
+
+    CXCursor_OMPParallelMaskedTaskLoopSimdDirective = 304, ## OpenMP parallel masked taskloop simd directive.
+
+    CXCursor_TranslationUnit = 350, ## *
+                                    ##  Cursor that represents the translation unit itself.
+                                    ## 
+                                    ##  The translation unit cursor exists primarily to act as the root
+                                    ##  cursor for traversing the contents of a translation unit.
+
+    # Attributes
     CXCursor_UnexposedAttr = 400, ## *
                            ##  An attribute whose specific kind is not exposed via this
                            ##  interface.
@@ -2204,7 +2231,11 @@ type
     CXCursor_StaticAssert = 602, ## *
                               ##  a friend declaration.
                               ##
-    CXCursor_FriendDecl = 603, CXCursor_OverloadCandidate = 700
+    CXCursor_FriendDecl = 603,
+
+    CXCursor_ConceptDecl = 604, ## a concept declaration.
+
+    CXCursor_OverloadCandidate = 700
 
 const
   CXCursor_FirstDecl = CXCursor_UnexposedDecl
@@ -2214,17 +2245,17 @@ const
   CXCursor_FirstInvalid = CXCursor_InvalidFile
   CXCursor_LastInvalid = CXCursor_InvalidCode
   CXCursor_FirstExpr = CXCursor_UnexposedExpr
-  CXCursor_LastExpr = CXCursor_FixedPointLiteral
+  CXCursor_LastExpr = CXCursor_RequiresExpr
   CXCursor_FirstStmt = CXCursor_UnexposedStmt
   CXCursor_AsmStmt = CXCursor_GCCAsmStmt
-  CXCursor_LastStmt = CXCursor_OMPGenericLoopDirective
+  CXCursor_LastStmt = CXCursor_OMPParallelMaskedTaskLoopSimdDirective
   CXCursor_FirstAttr = CXCursor_UnexposedAttr
   CXCursor_LastAttr = CXCursor_AlignedAttr
   CXCursor_MacroInstantiation = CXCursor_MacroExpansion
   CXCursor_FirstPreprocessing = CXCursor_PreprocessingDirective
   CXCursor_LastPreprocessing = CXCursor_InclusionDirective
   CXCursor_FirstExtraDecl = CXCursor_ModuleImportDecl
-  CXCursor_LastExtraDecl = CXCursor_FriendDecl
+  CXCursor_LastExtraDecl = CXCursor_ConceptDecl
 
 ## *
 ##  A cursor representing some element in the abstract syntax tree for
@@ -2881,7 +2912,7 @@ type
     CXType_OCLIntelSubgroupAVCImeResultDualRefStreamout = 173,
     CXType_OCLIntelSubgroupAVCImeSingleRefStreamin = 174,
     CXType_OCLIntelSubgroupAVCImeDualRefStreamin = 175, CXType_ExtVector = 176,
-    CXType_Atomic = 177
+    CXType_Atomic = 177, CXType_BTFTagAttributed = 178,
 
 const
   CXType_FirstBuiltin = CXType_Void
@@ -2900,6 +2931,7 @@ type
     CXCallingConv_X86_64SysV = 11, CXCallingConv_X86VectorCall = 12,
     CXCallingConv_Swift = 13, CXCallingConv_PreserveMost = 14,
     CXCallingConv_PreserveAll = 15, CXCallingConv_AArch64VectorCall = 16,
+    CXCallingConv_SwiftAsync = 17, CXCallingConv_AArch64SVEPCS = 18,
     CXCallingConv_Invalid = 100, CXCallingConv_Unexposed = 200
 
 const
@@ -3409,7 +3441,7 @@ type
     CXTypeNullability_NullableResult = 4, ## *
                                           ##  Generally behaves like Nullable, except when used in a block parameter that
                                           ##  was imported into a swift async method. There, swift will assume that the
-                                          ##  parameter can get null even if no error occured. _Nullable parameters are
+                                          ##  parameter can get null even if no error occurred. _Nullable parameters are
                                           ##  assumed to only get null on error.
                                           ##
 
