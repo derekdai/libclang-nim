@@ -31,7 +31,7 @@ import "CXString.nim"
 
 const
   CINDEX_VERSION_MAJOR* = 0
-  CINDEX_VERSION_MINOR* = 59
+  CINDEX_VERSION_MINOR* = 60
 
 proc CINDEX_VERSION_ENCODE*(major, minor: cint): string =
   result = $(((major) * 10000) + ((minor) * 1))
@@ -1878,41 +1878,43 @@ type
                                   ##
     CXCursor_CXXFunctionalCastExpr = 128, ## * A C++ typeid expression (C++ [expr.typeid]).
                                        ##
-    CXCursor_CXXTypeidExpr = 129, ## * [C++ 2.13.5] C++ Boolean Literal.
+    CXCursor_CXXAddrspaceCastExpr = 129, ## * OpenCL's addrspace_cast<> expression.
+
+    CXCursor_CXXTypeidExpr = 130, ## * [C++ 2.13.5] C++ Boolean Literal.
                                ##
-    CXCursor_CXXBoolLiteralExpr = 130, ## * [C++0x 2.14.7] C++ Pointer Literal.
+    CXCursor_CXXBoolLiteralExpr = 131, ## * [C++0x 2.14.7] C++ Pointer Literal.
                                     ##
-    CXCursor_CXXNullPtrLiteralExpr = 131, ## * Represents the "this" expression in C++
+    CXCursor_CXXNullPtrLiteralExpr = 132, ## * Represents the "this" expression in C++
                                        ##
-    CXCursor_CXXThisExpr = 132, ## * [C++ 15] C++ Throw Expression.
+    CXCursor_CXXThisExpr = 133, ## * [C++ 15] C++ Throw Expression.
                              ##
                              ##  This handles 'throw' and 'throw' assignment-expression. When
                              ##  assignment-expression isn't present, Op will be null.
                              ##
-    CXCursor_CXXThrowExpr = 133, ## * A new expression for memory allocation and constructor calls, e.g:
+    CXCursor_CXXThrowExpr = 134, ## * A new expression for memory allocation and constructor calls, e.g:
                               ##  "new CXXNewExpr(foo)".
                               ##
-    CXCursor_CXXNewExpr = 134, ## * A delete expression for memory deallocation and destructor calls,
+    CXCursor_CXXNewExpr = 135, ## * A delete expression for memory deallocation and destructor calls,
                             ##  e.g. "delete[] pArray".
                             ##
-    CXCursor_CXXDeleteExpr = 135, ## * A unary expression. (noexcept, sizeof, or other traits)
+    CXCursor_CXXDeleteExpr = 136, ## * A unary expression. (noexcept, sizeof, or other traits)
                                ##
-    CXCursor_UnaryExpr = 136,   ## * An Objective-C string literal i.e. @"foo".
+    CXCursor_UnaryExpr = 137,   ## * An Objective-C string literal i.e. @"foo".
                            ##
-    CXCursor_ObjCStringLiteral = 137, ## * An Objective-C \@encode expression.
+    CXCursor_ObjCStringLiteral = 138, ## * An Objective-C \@encode expression.
                                    ##
-    CXCursor_ObjCEncodeExpr = 138, ## * An Objective-C \@selector expression.
+    CXCursor_ObjCEncodeExpr = 139, ## * An Objective-C \@selector expression.
                                 ##
-    CXCursor_ObjCSelectorExpr = 139, ## * An Objective-C \@protocol expression.
+    CXCursor_ObjCSelectorExpr = 140, ## * An Objective-C \@protocol expression.
                                   ##
-    CXCursor_ObjCProtocolExpr = 140, ## * An Objective-C "bridged" cast expression, which casts between
+    CXCursor_ObjCProtocolExpr = 141, ## * An Objective-C "bridged" cast expression, which casts between
                                   ##  Objective-C pointers and C pointers, transferring ownership in the process.
                                   ##
                                   ##  \code
                                   ##    NSString *str = (__bridge_transfer NSString *)CFCreateString();
                                   ##  \endcode
                                   ##
-    CXCursor_ObjCBridgedCastExpr = 141, ## * Represents a C++0x pack expansion that produces a sequence of
+    CXCursor_ObjCBridgedCastExpr = 142, ## * Represents a C++0x pack expansion that produces a sequence of
                                      ##  expressions.
                                      ##
                                      ##  A pack expansion expression contains a pattern (which itself is an
@@ -1925,7 +1927,7 @@ type
                                      ##  }
                                      ##  \endcode
                                      ##
-    CXCursor_PackExpansionExpr = 142, ## * Represents an expression that computes the length of a parameter
+    CXCursor_PackExpansionExpr = 143, ## * Represents an expression that computes the length of a parameter
                                    ##  pack.
                                    ##
                                    ##  \code
@@ -1935,7 +1937,7 @@ type
                                    ##  };
                                    ##  \endcode
                                    ##
-    CXCursor_SizeOfPackExpr = 143, ##  Represents a C++ lambda expression that produces a local function
+    CXCursor_SizeOfPackExpr = 144, ##  Represents a C++ lambda expression that produces a local function
                                 ##  object.
                                 ##
                                 ##  \code
@@ -1947,26 +1949,32 @@ type
                                 ##  }
                                 ##  \endcode
                                 ##
-    CXCursor_LambdaExpr = 144,  ## * Objective-c Boolean Literal.
+    CXCursor_LambdaExpr = 145,  ## * Objective-c Boolean Literal.
                             ##
-    CXCursor_ObjCBoolLiteralExpr = 145, ## * Represents the "self" expression in an Objective-C method.
+    CXCursor_ObjCBoolLiteralExpr = 146, ## * Represents the "self" expression in an Objective-C method.
                                      ##
-    CXCursor_ObjCSelfExpr = 146, ## * OpenMP 4.0 [2.4, Array Section].
+    CXCursor_ObjCSelfExpr = 147, ## * OpenMP 4.0 [2.4, Array Section].
                               ##
-    CXCursor_OMPArraySectionExpr = 147, ## * Represents an @available(...) check.
+    CXCursor_OMPArraySectionExpr = 148, ## * Represents an @available(...) check.
                                      ##
-    CXCursor_ObjCAvailabilityCheckExpr = 148, ## *
+    CXCursor_ObjCAvailabilityCheckExpr = 149, ## *
                                            ##  Fixed point literal
                                            ##
-    CXCursor_FixedPointLiteral = 149, CXCursor_UnexposedStmt = 200, ## *
-                                                          ##  A statement whose specific kind is not exposed via this
-                                                          ##  interface.
-                                                          ##
-                                                          ##  Unexposed statements have the same operations as any other kind of
-                                                          ##  statement; one can extract their location information, spelling,
-                                                          ##  children, etc. However, the specific kind of the statement is not
-                                                          ##  reported.
-                                                          ##
+    CXCursor_FixedPointLiteral = 150, ## * OpenMP 5.0 [2.1.4, Array Shaping].
+
+    CXCursor_OMPArrayShapingExpr = 151,
+
+    CXCursor_OMPIteratorExpr = 152, ## * OpenMP 5.0 [2.1.6 Iterators]
+
+    CXCursor_UnexposedStmt = 200, ## *
+                                  ##  A statement whose specific kind is not exposed via this
+                                  ##  interface.
+                                  ##
+                                  ##  Unexposed statements have the same operations as any other kind of
+                                  ##  statement; one can extract their location information, spelling,
+                                  ##  children, etc. However, the specific kind of the statement is not
+                                  ##  reported.
+                                  ##
     CXCursor_LabelStmt = 201, ## * A group of statements like { stmt stmt }.
                            ##
                            ##  This cursor kind is used to describe compound statements, e.g. function
@@ -2139,7 +2147,14 @@ type
                                                 ##
     CXCursor_OMPParallelMasterTaskLoopSimdDirective = 284, ## * OpenMP parallel master directive.
                                                         ##
-    CXCursor_OMPParallelMasterDirective = 285, CXCursor_TranslationUnit = 300, ##  Attributes
+    CXCursor_OMPParallelMasterDirective = 285,
+
+    CXCursor_OMPDepobjDirective = 286, ## * OpenMP depobj directive.
+
+    CXCursor_OMPScanDirective = 287, ## * OpenMP scan directive.
+
+    CXCursor_TranslationUnit = 300, ##  Attributes
+
     CXCursor_UnexposedAttr = 400, ## *
                            ##  An attribute whose specific kind is not exposed via this
                            ##  interface.
@@ -2186,7 +2201,7 @@ const
   CXCursor_LastExpr = CXCursor_FixedPointLiteral
   CXCursor_FirstStmt = CXCursor_UnexposedStmt
   CXCursor_AsmStmt = CXCursor_GCCAsmStmt
-  CXCursor_LastStmt = CXCursor_OMPParallelMasterDirective
+  CXCursor_LastStmt = CXCursor_OMPScanDirective
   CXCursor_FirstAttr = CXCursor_UnexposedAttr
   CXCursor_LastAttr = CXCursor_AlignedAttr
   CXCursor_MacroInstantiation = CXCursor_MacroExpansion
@@ -2781,8 +2796,8 @@ type
     CXType_ObjCClass = 28, CXType_ObjCSel = 29, CXType_Float128 = 30, CXType_Half = 31,
     CXType_Float16 = 32, CXType_ShortAccum = 33, CXType_Accum = 34,
     CXType_LongAccum = 35, CXType_UShortAccum = 36, CXType_UAccum = 37,
-    CXType_ULongAccum = 38, CXType_Complex = 100, CXType_Pointer = 101,
-    CXType_BlockPointer = 102, CXType_LValueReference = 103,
+    CXType_ULongAccum = 38, CXType_BFloat16 = 39, CXType_Complex = 100,
+    CXType_Pointer = 101, CXType_BlockPointer = 102, CXType_LValueReference = 103,
     CXType_RValueReference = 104, CXType_Record = 105, CXType_Enum = 106,
     CXType_Typedef = 107, CXType_ObjCInterface = 108, CXType_ObjCObjectPointer = 109,
     CXType_FunctionNoProto = 110, CXType_FunctionProto = 111,
@@ -2826,11 +2841,12 @@ type
     CXType_OCLIntelSubgroupAVCImeResultSingleRefStreamout = 172,
     CXType_OCLIntelSubgroupAVCImeResultDualRefStreamout = 173,
     CXType_OCLIntelSubgroupAVCImeSingleRefStreamin = 174,
-    CXType_OCLIntelSubgroupAVCImeDualRefStreamin = 175, CXType_ExtVector = 176
+    CXType_OCLIntelSubgroupAVCImeDualRefStreamin = 175, CXType_ExtVector = 176,
+    CXType_Atomic = 177
 
 const
   CXType_FirstBuiltin = CXType_Void
-  CXType_LastBuiltin = CXType_ULongAccum
+  CXType_LastBuiltin = CXType_BFloat16
 
 ## *
 ##  Describes the calling convention of a function type
@@ -3235,7 +3251,7 @@ proc Type_getNumObjCProtocolRefs*(T: CXType): cuint {.
 proc Type_getObjCProtocolDecl*(T: CXType; i: cuint): CXCursor {.
     importc: "clang_Type_getObjCProtocolDecl", cdecl.}
 ## *
-##  Retreive the number of type arguments associated with an ObjC object.
+##  Retrieve the number of type arguments associated with an ObjC object.
 ##
 ##  If the type is not an ObjC object, 0 is returned.
 ##
@@ -3386,8 +3402,6 @@ type
     CXTypeLayoutError_Invalid = -1 ## *
                                 ##  The type is an incomplete Type.
                                 ##
-
-
 ## *
 ##  Return the alignment of a type in bytes as per C++[expr.alignof]
 ##    standard.
@@ -3448,6 +3462,14 @@ proc Type_getOffsetOf*(T: CXType; S: cstring): clonglong {.
 proc Type_getModifiedType*(T: CXType): CXType {.
     importc: "clang_Type_getModifiedType", cdecl.}
 ## *
+##  Gets the type contained by this atomic type.
+##
+##  If a non-atomic type is passed in, an invalid type is returned.
+##
+
+proc Type_getValueType(T: CXType): CXType {.
+    importc: "clang_Type_getValueType", cdecl.}
+## *
 ##  Return the offset of the field represented by the Cursor.
 ##
 ##  If the cursor is not a field declaration, -1 is returned.
@@ -3484,6 +3506,7 @@ proc Cursor_isAnonymousRecordDecl*(C: CXCursor): cuint {.
 
 proc Cursor_isInlineNamespace*(C: CXCursor): cuint {.
     importc: "clang_Cursor_isInlineNamespace", cdecl.}
+
 type
   CXRefQualifierKind* {.size: sizeof(cint).} = enum ## * No ref-qualifier was provided.
     CXRefQualifier_None = 0,    ## * An lvalue ref-qualifier was provided (\c &).
