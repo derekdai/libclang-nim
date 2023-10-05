@@ -2165,6 +2165,10 @@ type
   
     CXCursor_OMPUnrollDirective = 293, ## * OpenMP unroll directive.
 
+    CXCursor_OMPMetaDirective = 294, ## * OpenMP metadirective directive.
+  
+    CXCursor_OMPGenericLoopDirective = 295, ## * OpenMP loop directive.
+
     CXCursor_TranslationUnit = 300, ##  Attributes
 
     CXCursor_UnexposedAttr = 400, ## *
@@ -2213,7 +2217,7 @@ const
   CXCursor_LastExpr = CXCursor_FixedPointLiteral
   CXCursor_FirstStmt = CXCursor_UnexposedStmt
   CXCursor_AsmStmt = CXCursor_GCCAsmStmt
-  CXCursor_LastStmt = CXCursor_OMPUnrollDirective
+  CXCursor_LastStmt = CXCursor_OMPGenericLoopDirective
   CXCursor_FirstAttr = CXCursor_UnexposedAttr
   CXCursor_LastAttr = CXCursor_AlignedAttr
   CXCursor_MacroInstantiation = CXCursor_MacroExpansion
@@ -2831,18 +2835,18 @@ type
     CXType_ObjCClass = 28, CXType_ObjCSel = 29, CXType_Float128 = 30, CXType_Half = 31,
     CXType_Float16 = 32, CXType_ShortAccum = 33, CXType_Accum = 34,
     CXType_LongAccum = 35, CXType_UShortAccum = 36, CXType_UAccum = 37,
-    CXType_ULongAccum = 38, CXType_BFloat16 = 39, CXType_Complex = 100,
-    CXType_Pointer = 101, CXType_BlockPointer = 102, CXType_LValueReference = 103,
-    CXType_RValueReference = 104, CXType_Record = 105, CXType_Enum = 106,
-    CXType_Typedef = 107, CXType_ObjCInterface = 108, CXType_ObjCObjectPointer = 109,
-    CXType_FunctionNoProto = 110, CXType_FunctionProto = 111,
-    CXType_ConstantArray = 112, CXType_Vector = 113, CXType_IncompleteArray = 114,
-    CXType_VariableArray = 115, CXType_DependentSizedArray = 116,
-    CXType_MemberPointer = 117, CXType_Auto = 118, ## *
-                                             ##  Represents a type that was referred to using an elaborated type keyword.
-                                             ##
-                                             ##  E.g., struct S, or via a qualified name, e.g., N::M::type, or both.
-                                             ##
+    CXType_ULongAccum = 38, CXType_BFloat16 = 39, CXType_Ibm128 = 40,
+    CXType_Complex = 100, CXType_Pointer = 101, CXType_BlockPointer = 102,
+    CXType_LValueReference = 103, CXType_RValueReference = 104, CXType_Record = 105,
+    CXType_Enum = 106, CXType_Typedef = 107, CXType_ObjCInterface = 108,
+    CXType_ObjCObjectPointer = 109, CXType_FunctionNoProto = 110,
+    CXType_FunctionProto = 111, CXType_ConstantArray = 112, CXType_Vector = 113,
+    CXType_IncompleteArray = 114, CXType_VariableArray = 115,
+    CXType_DependentSizedArray = 116, CXType_MemberPointer = 117, CXType_Auto = 118, ## *
+                                                                                     ##  Represents a type that was referred to using an elaborated type keyword.
+                                                                                     ##
+                                                                                     ##  E.g., struct S, or via a qualified name, e.g., N::M::type, or both.
+                                                                                     ##
     CXType_Elaborated = 119,    ##  OpenCL PipeType.
     CXType_Pipe = 120,          ##  OpenCL builtin types.
     CXType_OCLImage1dRO = 121, CXType_OCLImage1dArrayRO = 122,
