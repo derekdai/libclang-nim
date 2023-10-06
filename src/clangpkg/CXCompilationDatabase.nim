@@ -28,7 +28,7 @@ import "CXString.nim"
 ##
 
 type
-  CXCompilationDatabase* = pointer
+  CXCompilationDatabase* = distinct pointer
 
 ## *
 ##  Contains the results of a search in the compilation database
@@ -41,14 +41,14 @@ type
 ##
 
 type
-  CXCompileCommands* = pointer
+  CXCompileCommands* = distinct pointer
 
 ## *
 ##  Represents the command line invocation to compile a specific file.
 ##
 
 type
-  CXCompileCommand* = pointer
+  CXCompileCommand* = distinct pointer
 
 ## *
 ##  Error codes for Compilation Database
@@ -72,27 +72,27 @@ type                          ##
 ##  It must be freed by \c clang_CompilationDatabase_dispose.
 ##
 
-proc CompilationDatabase_fromDirectory*(BuildDir: cstring; ErrorCode: ptr CXCompilationDatabase_Error): CXCompilationDatabase {.
+proc CompilationDatabaseFromDirectory*(BuildDir: cstring; ErrorCode: ptr CXCompilationDatabase_Error): CXCompilationDatabase {.
     importc: "clang_CompilationDatabase_fromDirectory", cdecl.}
 ## *
 ##  Free the given compilation database
 ##
 
-proc CompilationDatabase_dispose*(a1: CXCompilationDatabase) {.
+proc dispose*(a1: CXCompilationDatabase) {.
     importc: "clang_CompilationDatabase_dispose", cdecl.}
 ## *
 ##  Find the compile commands used for a file. The compile commands
 ##  must be freed by \c clang_CompileCommands_dispose.
 ##
 
-proc CompilationDatabase_getCompileCommands*(a1: CXCompilationDatabase;
+proc getCompileCommands*(a1: CXCompilationDatabase;
     CompleteFileName: cstring): CXCompileCommands {.
     importc: "clang_CompilationDatabase_getCompileCommands", cdecl.}
 ## *
 ##  Get all the compile commands in the given compilation database.
 ##
 
-proc CompilationDatabase_getAllCompileCommands*(a1: CXCompilationDatabase): CXCompileCommands {.
+proc getAllCompileCommands*(a1: CXCompilationDatabase): CXCompileCommands {.
     importc: "clang_CompilationDatabase_getAllCompileCommands", cdecl.}
 ## *
 ##  Free the given CompileCommands
@@ -118,20 +118,20 @@ proc CompileCommands_getCommand*(a1: CXCompileCommands; I: cuint): CXCompileComm
 ##  Get the working directory where the CompileCommand was executed from
 ##
 
-proc CompileCommand_getDirectory*(a1: CXCompileCommand): CXString {.
+proc getDirectory*(a1: CXCompileCommand): CXString {.
     importc: "clang_CompileCommand_getDirectory", cdecl.}
 ## *
 ##  Get the filename associated with the CompileCommand.
 ##
 
-proc CompileCommand_getFilename*(a1: CXCompileCommand): CXString {.
+proc getFilename*(a1: CXCompileCommand): CXString {.
     importc: "clang_CompileCommand_getFilename", cdecl.}
 ## *
 ##  Get the number of arguments in the compiler invocation.
 ##
 ##
 
-proc CompileCommand_getNumArgs*(a1: CXCompileCommand): cuint {.
+proc getNumArgs*(a1: CXCompileCommand): cuint {.
     importc: "clang_CompileCommand_getNumArgs", cdecl.}
 ## *
 ##  Get the I'th argument value in the compiler invocations
@@ -140,25 +140,25 @@ proc CompileCommand_getNumArgs*(a1: CXCompileCommand): cuint {.
 ##   - argument 0 is the compiler executable
 ##
 
-proc CompileCommand_getArg*(a1: CXCompileCommand; I: cuint): CXString {.
+proc getArg*(a1: CXCompileCommand; I: cuint): CXString {.
     importc: "clang_CompileCommand_getArg", cdecl.}
 ## *
 ##  Get the number of source mappings for the compiler invocation.
 ##
 
-proc CompileCommand_getNumMappedSources*(a1: CXCompileCommand): cuint {.
+proc getNumMappedSources*(a1: CXCompileCommand): cuint {.
     importc: "clang_CompileCommand_getNumMappedSources", cdecl.}
 ## *
 ##  Get the I'th mapped source path for the compiler invocation.
 ##
 
-proc CompileCommand_getMappedSourcePath*(a1: CXCompileCommand; I: cuint): CXString {.
+proc getMappedSourcePath*(a1: CXCompileCommand; I: cuint): CXString {.
     importc: "clang_CompileCommand_getMappedSourcePath", cdecl.}
 ## *
 ##  Get the I'th mapped source content for the compiler invocation.
 ##
 
-proc CompileCommand_getMappedSourceContent*(a1: CXCompileCommand; I: cuint): CXString {.
+proc getMappedSourceContent*(a1: CXCompileCommand; I: cuint): CXString {.
     importc: "clang_CompileCommand_getMappedSourceContent", cdecl.}
 ## *
 ##  @}

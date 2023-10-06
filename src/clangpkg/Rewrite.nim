@@ -17,7 +17,7 @@ import "Index.nim"
 ## LLVM_CLANG_C_EXTERN_C_BEGIN
 
 typedef
-  CXRewriter* = pointer
+  CXRewriter* = distinct pointer
 
 ## *
 ##  Create CXRewriter.

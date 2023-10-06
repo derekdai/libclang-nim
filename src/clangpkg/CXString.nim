@@ -46,13 +46,13 @@ proc getCString*(string: CXString): cstring {.importc: "clang_getCString",
 ##  Free the given string.
 ##
 
-proc disposeString*(string: CXString) {.importc: "clang_disposeString",
+proc dispose*(string: CXString) {.importc: "clang_disposeString",
                                      cdecl.}
 ## *
 ##  Free the given string set.
 ##
 
-proc disposeStringSet*(set: ptr CXStringSet) {.importc: "clang_disposeStringSet",
+proc dispose*(set: ptr CXStringSet) {.importc: "clang_disposeStringSet",
     cdecl.}
 ## *
 ##  @}
