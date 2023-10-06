@@ -70,7 +70,7 @@ proc CINDEX_VERSION_STRING*(): string =
 ##
 
 type
-  CXIndex* = pointer
+  CXIndex* = distinct pointer
 
 ## *
 ##  An opaque type representing target information for a given translation
@@ -78,14 +78,14 @@ type
 ##
 
 type
-  CXTargetInfo* = pointer # CXTargetInfoImpl
+  CXTargetInfo* = distinct pointer # CXTargetInfoImpl
 
 ## *
 ##  A single translation unit, which resides in an index.
 ##
 
 type
-  CXTranslationUnit* = pointer # CXTranslationUnitImpl
+  CXTranslationUnit* = distinct pointer # CXTranslationUnitImpl
 
 ## *
 ##  Opaque pointer representing client data that will be passed through
@@ -256,7 +256,7 @@ proc createIndex*(excludeDeclarationsFromPCH: cint; displayDiagnostics: cint): C
 ##  within that index have been destroyed.
 ##
 
-proc disposeIndex*(index: CXIndex) {.importc: "clang_disposeIndex", cdecl.}
+proc dispose*(index: CXIndex) {.importc: "clang_disposeIndex", cdecl.}
 type ## *
     ##  Used to indicate that no special CXIndex options are needed.
     ##
@@ -296,7 +296,7 @@ type ## *
 ##  \param options A bitmask of options, a bitwise OR of CXGlobalOpt_XXX flags.
 ##
 
-proc CXIndex_setGlobalOptions*(a1: CXIndex; options: cuint) {.
+proc setGlobalOptions*(a1: CXIndex; options: cuint) {.
     importc: "clang_CXIndex_setGlobalOptions", cdecl.}
 ## *
 ##  Gets the general options associated with a CXIndex.
@@ -305,7 +305,7 @@ proc CXIndex_setGlobalOptions*(a1: CXIndex; options: cuint) {.
 ##  are associated with the given CXIndex object.
 ##
 
-proc CXIndex_getGlobalOptions*(a1: CXIndex): cuint {.
+proc getGlobalOptions*(a1: CXIndex): cuint {.
     importc: "clang_CXIndex_getGlobalOptions", cdecl.}
 ## *
 ##  Sets the invocation emission path option in a CXIndex.
@@ -315,7 +315,7 @@ proc CXIndex_getGlobalOptions*(a1: CXIndex): cuint {.
 ##  libclang invocations are not logged..
 ##
 
-proc CXIndex_setInvocationEmissionPathOption*(a1: CXIndex; Path: cstring) {.
+proc setInvocationEmissionPathOption*(a1: CXIndex; Path: cstring) {.
     importc: "clang_CXIndex_setInvocationEmissionPathOption", cdecl.}
 ## *
 ##  \defgroup CINDEX_FILES File manipulation routines
@@ -327,7 +327,7 @@ proc CXIndex_setInvocationEmissionPathOption*(a1: CXIndex; Path: cstring) {.
 ##
 
 type
-  CXFile* = pointer
+  CXFile* = distinct pointer
 
 ## *
 ##  Retrieve the complete file and path name of the given file.
@@ -396,14 +396,14 @@ proc getFile*(tu: CXTranslationUnit; file_name: cstring): CXFile {.
 ##  \p file, or a NULL pointer when the file is not loaded.
 ##
 
-proc getFileContents*(tu: CXTranslationUnit; file: CXFile; size: ptr csize): cstring {.
+proc getFileContents*(tu: CXTranslationUnit; file: CXFile; size: ptr csize_t): cstring {.
     importc: "clang_getFileContents", cdecl.}
 ## *
 ##  Returns non-zero if the \c file1 and \c file2 point to the same file,
 ##  or they are both NULL.
 ##
 
-proc File_isEqual*(file1: CXFile; file2: CXFile): cint {.
+proc isEqual*(file1: CXFile; file2: CXFile): cint {.
     importc: "clang_File_isEqual", cdecl.}
 ## *
 ##  Returns the real path name of \c file.
@@ -411,7 +411,7 @@ proc File_isEqual*(file1: CXFile; file2: CXFile): cint {.
 ##  An empty string may be returned. Use \c clang_getFileName() in that case.
 ##
 
-proc File_tryGetRealPathName*(file: CXFile): CXString {.
+proc tryGetRealPathName*(file: CXFile): CXString {.
     importc: "clang_File_tryGetRealPathName", cdecl.}
 ## *
 ##  @}
@@ -524,7 +524,7 @@ proc equalRanges*(range1: CXSourceRange; range2: CXSourceRange): cuint {.
 ##  Returns non-zero if \p range is null.
 ##
 
-proc Range_isNull*(range: CXSourceRange): cint {.importc: "clang_Range_isNull",
+proc isNull*(range: CXSourceRange): cint {.importc: "clang_Range_isNull",
     cdecl.}
 ## *
 ##  Retrieve the file, line, column, and offset represented by
@@ -711,7 +711,7 @@ proc getAllSkippedRanges*(tu: CXTranslationUnit): ptr CXSourceRangeList {.
 ##  Destroy the given \c CXSourceRangeList.
 ##
 
-proc disposeSourceRangeList*(ranges: ptr CXSourceRangeList) {.
+proc dispose*(ranges: ptr CXSourceRangeList) {.
     importc: "clang_disposeSourceRangeList", cdecl.}
 ## *
 ##  @}
@@ -755,14 +755,14 @@ type
 ##
 
 type
-  CXDiagnostic* = pointer
+  CXDiagnostic* = distinct pointer
 
 ## *
 ##  A group of CXDiagnostics.
 ##
 
 type
-  CXDiagnosticSet* = pointer
+  CXDiagnosticSet* = distinct pointer
 
 ## *
 ##  Determine the number of diagnostics in a CXDiagnosticSet.
@@ -827,7 +827,7 @@ proc loadDiagnostics*(file: cstring; error: ptr CXLoadDiag_Error;
 ##  Release a CXDiagnosticSet and all of its contained diagnostics.
 ##
 
-proc disposeDiagnosticSet*(Diags: CXDiagnosticSet) {.
+proc dispose*(Diags: CXDiagnosticSet) {.
     importc: "clang_disposeDiagnosticSet", cdecl.}
 ## *
 ##  Retrieve the child diagnostics of a CXDiagnostic.
@@ -870,7 +870,7 @@ proc getDiagnosticSetFromTU*(Unit: CXTranslationUnit): CXDiagnosticSet {.
 ##  Destroy a diagnostic.
 ##
 
-proc disposeDiagnostic*(Diagnostic: CXDiagnostic) {.
+proc dispose*(Diagnostic: CXDiagnostic) {.
     importc: "clang_disposeDiagnostic", cdecl.}
 ## *
 ##  Options to control the display of diagnostics.
@@ -1487,7 +1487,7 @@ proc suspendTranslationUnit*(a1: CXTranslationUnit): cuint {.
 ##  Destroy the specified CXTranslationUnit object.
 ##
 
-proc disposeTranslationUnit*(a1: CXTranslationUnit) {.
+proc dispose*(a1: CXTranslationUnit) {.
     importc: "clang_disposeTranslationUnit", cdecl.}
 ## *
 ##  Flags that control the reparsing of translation units.
@@ -1620,7 +1620,7 @@ type
 
 proc getCXTUResourceUsage*(TU: CXTranslationUnit): CXTUResourceUsage {.
     importc: "clang_getCXTUResourceUsage", cdecl.}
-proc disposeCXTUResourceUsage*(usage: CXTUResourceUsage) {.
+proc dispose*(usage: CXTUResourceUsage) {.
     importc: "clang_disposeCXTUResourceUsage", cdecl.}
 ## *
 ##  Get target information for this translation unit.
@@ -1634,7 +1634,7 @@ proc getTranslationUnitTargetInfo*(CTUnit: CXTranslationUnit): CXTargetInfo {.
 ##  Destroy the CXTargetInfo object.
 ##
 
-proc TargetInfo_dispose*(Info: CXTargetInfo) {.importc: "clang_TargetInfo_dispose",
+proc dispose*(Info: CXTargetInfo) {.importc: "clang_TargetInfo_dispose",
     cdecl.}
 ## *
 ##  Get the normalized target triple as a string.
@@ -1642,7 +1642,7 @@ proc TargetInfo_dispose*(Info: CXTargetInfo) {.importc: "clang_TargetInfo_dispos
 ##  Returns the empty string in case of any error.
 ##
 
-proc TargetInfo_getTriple*(Info: CXTargetInfo): CXString {.
+proc getTriple*(Info: CXTargetInfo): CXString {.
     importc: "clang_TargetInfo_getTriple", cdecl.}
 ## *
 ##  Get the pointer width of the target in bits.
@@ -1650,7 +1650,7 @@ proc TargetInfo_getTriple*(Info: CXTargetInfo): CXString {.
 ##  Returns -1 in case of error.
 ##
 
-proc TargetInfo_getPointerWidth*(Info: CXTargetInfo): cint {.
+proc getPointerWidth*(Info: CXTargetInfo): cint {.
     importc: "clang_TargetInfo_getPointerWidth", cdecl.}
 ## *
 ##  @}
@@ -2312,7 +2312,7 @@ proc equalCursors*(a1: CXCursor; a2: CXCursor): cuint {.importc: "clang_equalCur
 ##  Returns non-zero if \p cursor is null.
 ##
 
-proc Cursor_isNull*(cursor: CXCursor): cint {.importc: "clang_Cursor_isNull",
+proc isNull*(cursor: CXCursor): cint {.importc: "clang_Cursor_isNull",
     cdecl.}
 ## *
 ##  Compute a hash value for the given cursor.
@@ -2375,7 +2375,7 @@ proc isAttribute*(a1: CXCursorKind): cuint {.importc: "clang_isAttribute",
 ##  Determine whether the given cursor has any attributes.
 ##
 
-proc Cursor_hasAttrs*(C: CXCursor): cuint {.importc: "clang_Cursor_hasAttrs",
+proc hasAttrs*(C: CXCursor): cuint {.importc: "clang_Cursor_hasAttrs",
                                         cdecl.}
 ## *
 ##  Determine whether the given cursor kind represents an invalid
@@ -2545,14 +2545,14 @@ proc getCursorPlatformAvailability*(cursor: CXCursor; always_deprecated: ptr cin
 ##  Free the memory associated with a \c CXPlatformAvailability structure.
 ##
 
-proc disposeCXPlatformAvailability*(availability: ptr CXPlatformAvailability) {.
+proc dispose*(availability: ptr CXPlatformAvailability) {.
     importc: "clang_disposeCXPlatformAvailability", cdecl.}
 ##*
 ## If cursor refers to a variable declaration and it has initializer returns
 ## cursor referring to the initializer otherwise return null cursor.
 ##
 
-proc Cursor_getVarDeclInitializer*(cursor: CXCursor): CXCursor {.
+proc getVarDeclInitializer*(cursor: CXCursor): CXCursor {.
     importc: "clang_Cursor_getVarDeclInitializer", cdecl.}
 ## *
 ##  If cursor refers to a variable declaration that has global storage returns 1.
@@ -2560,7 +2560,7 @@ proc Cursor_getVarDeclInitializer*(cursor: CXCursor): CXCursor {.
 ##  returns 0. Otherwise returns -1.
 ## 
 
-proc Cursor_hasVarDeclGlobalStorage*(cursor: CXCursor): cint {.
+proc hasVarDeclGlobalStorage*(cursor: CXCursor): cint {.
     importc: "clang_Cursor_hasVarDeclGlobalStorage", cdecl.}
 ## *
 ##  If cursor refers to a variable declaration that has external storage
@@ -2568,7 +2568,7 @@ proc Cursor_hasVarDeclGlobalStorage*(cursor: CXCursor): cint {.
 ##  external storage returns 0. Otherwise returns -1.
 ## 
 
-proc Cursor_hasVarDeclExternalStorage*(cursor: CXCursor): cint {.
+proc hasVarDeclExternalStorage*(cursor: CXCursor): cint {.
     importc: "clang_Cursor_hasVarDeclExternalStorage", cdecl.}
 ## *
 ##  Describe the "language" of the entity referred to by a cursor.
@@ -2606,14 +2606,14 @@ proc getCursorTLSKind*(cursor: CXCursor): CXTLSKind {.
 ##  Returns the translation unit that a cursor originated from.
 ##
 
-proc Cursor_getTranslationUnit*(a1: CXCursor): CXTranslationUnit {.
+proc getTranslationUnit*(a1: CXCursor): CXTranslationUnit {.
     importc: "clang_Cursor_getTranslationUnit", cdecl.}
 ## *
 ##  A fast container representing a set of CXCursors.
 ##
 
 type
-  CXCursorSet* = pointer # CXCursorSetImpl
+  CXCursorSet* = distinct pointer # CXCursorSetImpl
 
 ## *
 ##  Creates an empty CXCursorSet.
@@ -2625,7 +2625,7 @@ proc createCXCursorSet*(): CXCursorSet {.importc: "clang_createCXCursorSet",
 ##  Disposes a CXCursorSet and releases its associated memory.
 ##
 
-proc disposeCXCursorSet*(cset: CXCursorSet) {.importc: "clang_disposeCXCursorSet",
+proc dispose*(cset: CXCursorSet) {.importc: "clang_disposeCXCursorSet",
     cdecl.}
 ## *
 ##  Queries a CXCursorSet to see if it contains a specific CXCursor.
@@ -2633,7 +2633,7 @@ proc disposeCXCursorSet*(cset: CXCursorSet) {.importc: "clang_disposeCXCursorSet
 ##  \returns non-zero if the set contains the specified cursor.
 ##
 
-proc CXCursorSet_contains*(cset: CXCursorSet; cursor: CXCursor): cuint {.
+proc contains*(cset: CXCursorSet; cursor: CXCursor): cuint {.
     importc: "clang_CXCursorSet_contains", cdecl.}
 ## *
 ##  Inserts a CXCursor into a CXCursorSet.
@@ -2641,7 +2641,7 @@ proc CXCursorSet_contains*(cset: CXCursorSet; cursor: CXCursor): cuint {.
 ##  \returns zero if the CXCursor was already in the set, and non-zero otherwise.
 ##
 
-proc CXCursorSet_insert*(cset: CXCursorSet; cursor: CXCursor): cuint {.
+proc insert*(cset: CXCursorSet; cursor: CXCursor): cuint {.
     importc: "clang_CXCursorSet_insert", cdecl.}
 ## *
 ##  Determine the semantic parent of the given cursor.
@@ -2768,7 +2768,7 @@ proc getOverriddenCursors*(cursor: CXCursor; overridden: ptr ptr CXCursor;
 ##  clang_getOverriddenCursors().
 ##
 
-proc disposeOverriddenCursors*(overridden: ptr CXCursor) {.
+proc dispose*(overridden: ptr CXCursor) {.
     importc: "clang_disposeOverriddenCursors", cdecl.}
 ## *
 ##  Retrieve the file that is included by the given inclusion directive
@@ -3019,7 +3019,7 @@ proc getFieldDeclBitWidth*(C: CXCursor): cint {.
 ##  declarations of functions or methods. For other cursors -1 is returned.
 ##
 
-proc Cursor_getNumArguments*(C: CXCursor): cint {.
+proc getNumArguments*(C: CXCursor): cint {.
     importc: "clang_Cursor_getNumArguments", cdecl.}
 ## *
 ##  Retrieve the argument cursor of a function or method.
@@ -3029,7 +3029,7 @@ proc Cursor_getNumArguments*(C: CXCursor): cint {.
 ##  invalid cursor is returned.
 ##
 
-proc Cursor_getArgument*(C: CXCursor; i: cuint): CXCursor {.
+proc getArgument*(C: CXCursor; i: cuint): CXCursor {.
     importc: "clang_Cursor_getArgument", cdecl.}
 ## *
 ##  Describes the kind of a template argument.
@@ -3064,7 +3064,7 @@ type
 ##  The value 3 would be returned from this call.
 ##
 
-proc Cursor_getNumTemplateArguments*(C: CXCursor): cint {.
+proc getNumTemplateArguments*(C: CXCursor): cint {.
     importc: "clang_Cursor_getNumTemplateArguments", cdecl.}
 ## *
 ##  Retrieve the kind of the I'th template argument of the CXCursor C.
@@ -3083,7 +3083,7 @@ proc Cursor_getNumTemplateArguments*(C: CXCursor): cint {.
 ##  respectively.
 ##
 
-proc Cursor_getTemplateArgumentKind*(C: CXCursor; I: cuint): CXTemplateArgumentKind {.
+proc getTemplateArgumentKind*(C: CXCursor; I: cuint): CXTemplateArgumentKind {.
     importc: "clang_Cursor_getTemplateArgumentKind", cdecl.}
 ## *
 ##  Retrieve a CXType representing the type of a TemplateArgument of a
@@ -3104,7 +3104,7 @@ proc Cursor_getTemplateArgumentKind*(C: CXCursor; I: cuint): CXTemplateArgumentK
 ##  Invalid types will be returned for I == 1 or 2.
 ##
 
-proc Cursor_getTemplateArgumentType*(C: CXCursor; I: cuint): CXType {.
+proc getTemplateArgumentType*(C: CXCursor; I: cuint): CXType {.
     importc: "clang_Cursor_getTemplateArgumentType", cdecl.}
 ## *
 ##  Retrieve the value of an Integral TemplateArgument (of a function
@@ -3124,7 +3124,7 @@ proc Cursor_getTemplateArgumentType*(C: CXCursor; I: cuint): CXType {.
 ##  For I == 0, this function's behavior is undefined.
 ##
 
-proc Cursor_getTemplateArgumentValue*(C: CXCursor; I: cuint): clonglong {.
+proc getTemplateArgumentValue*(C: CXCursor; I: cuint): clonglong {.
     importc: "clang_Cursor_getTemplateArgumentValue", cdecl.}
 ## *
 ##  Retrieve the value of an Integral TemplateArgument (of a function
@@ -3144,7 +3144,7 @@ proc Cursor_getTemplateArgumentValue*(C: CXCursor; I: cuint): clonglong {.
 ##  For I == 0, this function's behavior is undefined.
 ##
 
-proc Cursor_getTemplateArgumentUnsignedValue*(C: CXCursor; I: cuint): culonglong {.
+proc getTemplateArgumentUnsignedValue*(C: CXCursor; I: cuint): culonglong {.
     importc: "clang_Cursor_getTemplateArgumentUnsignedValue", cdecl.}
 ## *
 ##  Determine whether two CXTypes represent the same type.
@@ -3179,21 +3179,21 @@ proc isConstQualifiedType*(T: CXType): cuint {.
 ##  function like.
 ##
 
-proc Cursor_isMacroFunctionLike*(C: CXCursor): cuint {.
+proc isMacroFunctionLike*(C: CXCursor): cuint {.
     importc: "clang_Cursor_isMacroFunctionLike", cdecl.}
 ## *
 ##  Determine whether a  CXCursor that is a macro, is a
 ##  builtin one.
 ##
 
-proc Cursor_isMacroBuiltin*(C: CXCursor): cuint {.
+proc isMacroBuiltin*(C: CXCursor): cuint {.
     importc: "clang_Cursor_isMacroBuiltin", cdecl.}
 ## *
 ##  Determine whether a  CXCursor that is a function declaration, is an
 ##  inline declaration.
 ##
 
-proc Cursor_isFunctionInlined*(C: CXCursor): cuint {.
+proc isFunctionInlined*(C: CXCursor): cuint {.
     importc: "clang_Cursor_isFunctionInlined", cdecl.}
 ## *
 ##  Determine whether a CXType has the "volatile" qualifier set,
@@ -3245,7 +3245,7 @@ proc getDeclObjCTypeEncoding*(C: CXCursor): CXString {.
 ##  Returns the Objective-C type encoding for the specified CXType.
 ##
 
-proc Type_getObjCEncoding*(`type`: CXType): CXString {.
+proc getObjCEncoding*(`type`: CXType): CXString {.
     importc: "clang_Type_getObjCEncoding", cdecl.}
 ## *
 ##  Retrieve the spelling of a given CXTypeKind.
@@ -3302,7 +3302,7 @@ proc getArgType*(T: CXType; i: cuint): CXType {.importc: "clang_getArgType",
 ##  If the type is not an ObjC object, an invalid type is returned.
 ##
 
-proc Type_getObjCObjectBaseType*(T: CXType): CXType {.
+proc getObjCObjectBaseType*(T: CXType): CXType {.
     importc: "clang_Type_getObjCObjectBaseType", cdecl.}
 ## *
 ##  Retrieve the number of protocol references associated with an ObjC object/id.
@@ -3310,7 +3310,7 @@ proc Type_getObjCObjectBaseType*(T: CXType): CXType {.
 ##  If the type is not an ObjC object, 0 is returned.
 ##
 
-proc Type_getNumObjCProtocolRefs*(T: CXType): cuint {.
+proc getNumObjCProtocolRefs*(T: CXType): cuint {.
     importc: "clang_Type_getNumObjCProtocolRefs", cdecl.}
 ## *
 ##  Retrieve the decl for a protocol reference for an ObjC object/id.
@@ -3319,7 +3319,7 @@ proc Type_getNumObjCProtocolRefs*(T: CXType): cuint {.
 ##  references, an invalid cursor is returned.
 ##
 
-proc Type_getObjCProtocolDecl*(T: CXType; i: cuint): CXCursor {.
+proc getObjCProtocolDecl*(T: CXType; i: cuint): CXCursor {.
     importc: "clang_Type_getObjCProtocolDecl", cdecl.}
 ## *
 ##  Retrieve the number of type arguments associated with an ObjC object.
@@ -3327,7 +3327,7 @@ proc Type_getObjCProtocolDecl*(T: CXType; i: cuint): CXCursor {.
 ##  If the type is not an ObjC object, 0 is returned.
 ##
 
-proc Type_getNumObjCTypeArgs*(T: CXType): cuint {.
+proc getNumObjCTypeArgs*(T: CXType): cuint {.
     importc: "clang_Type_getNumObjCTypeArgs", cdecl.}
 ## *
 ##  Retrieve a type argument associated with an ObjC object.
@@ -3336,7 +3336,7 @@ proc Type_getNumObjCTypeArgs*(T: CXType): cuint {.
 ##  an invalid type is returned.
 ##
 
-proc Type_getObjCTypeArg*(T: CXType; i: cuint): CXType {.
+proc getObjCTypeArg*(T: CXType; i: cuint): CXType {.
     importc: "clang_Type_getObjCTypeArg", cdecl.}
 ## *
 ##  Return 1 if the CXType is a variadic function type, and 0 otherwise.
@@ -3407,7 +3407,7 @@ proc getArraySize*(T: CXType): clonglong {.importc: "clang_getArraySize",
 ##  If a non-elaborated type is passed in, an invalid type is returned.
 ##
 
-proc Type_getNamedType*(T: CXType): CXType {.importc: "clang_Type_getNamedType",
+proc getNamedType*(T: CXType): CXType {.importc: "clang_Type_getNamedType",
     cdecl.}
 ## *
 ##  Determine if a typedef is 'transparent' tag.
@@ -3418,7 +3418,7 @@ proc Type_getNamedType*(T: CXType): CXType {.importc: "clang_Type_getNamedType",
 ##  \returns non-zero if transparent and zero otherwise.
 ##
 
-proc Type_isTransparentTagTypedef*(T: CXType): cuint {.
+proc isTransparentTagTypedef*(T: CXType): cuint {.
     importc: "clang_Type_isTransparentTagTypedef", cdecl.}
 type
   CXTypeNullabilityKind* {.size: sizeof(cint).} = enum ## *
@@ -3450,7 +3450,7 @@ type
 ##  Retrieve the nullability kind of a pointer type.
 ##
 
-proc Type_getNullability*(T: CXType): CXTypeNullabilityKind {.
+proc getNullability*(T: CXType): CXTypeNullabilityKind {.
     importc: "clang_Type_getNullability", cdecl.}
 ## *
 ##  List the possible error codes for \c clang_Type_getSizeOf,
@@ -3493,7 +3493,7 @@ type
 ##    CXTypeLayoutError_NotConstantSize is returned.
 ##
 
-proc Type_getAlignOf*(T: CXType): clonglong {.importc: "clang_Type_getAlignOf",
+proc getAlignOf*(T: CXType): clonglong {.importc: "clang_Type_getAlignOf",
     cdecl.}
 ## *
 ##  Return the class type of an member pointer type.
@@ -3501,7 +3501,7 @@ proc Type_getAlignOf*(T: CXType): clonglong {.importc: "clang_Type_getAlignOf",
 ##  If a non-member-pointer type is passed in, an invalid type is returned.
 ##
 
-proc Type_getClassType*(T: CXType): CXType {.importc: "clang_Type_getClassType",
+proc getClassType*(T: CXType): CXType {.importc: "clang_Type_getClassType",
     cdecl.}
 ## *
 ##  Return the size of a type in bytes as per C++[expr.sizeof] standard.
@@ -3513,7 +3513,7 @@ proc Type_getClassType*(T: CXType): CXType {.importc: "clang_Type_getClassType",
 ##    returned.
 ##
 
-proc Type_getSizeOf*(T: CXType): clonglong {.importc: "clang_Type_getSizeOf",
+proc getSizeOf*(T: CXType): clonglong {.importc: "clang_Type_getSizeOf",
     cdecl.}
 ## *
 ##  Return the offset of a field named S in a record of type T in bits
@@ -3529,7 +3529,7 @@ proc Type_getSizeOf*(T: CXType): clonglong {.importc: "clang_Type_getSizeOf",
 ##    CXTypeLayoutError_InvalidFieldName is returned.
 ##
 
-proc Type_getOffsetOf*(T: CXType; S: cstring): clonglong {.
+proc getOffsetOf*(T: CXType; S: cstring): clonglong {.
     importc: "clang_Type_getOffsetOf", cdecl.}
 ## *
 ##  Return the type that was modified by this attributed type.
@@ -3537,7 +3537,7 @@ proc Type_getOffsetOf*(T: CXType; S: cstring): clonglong {.
 ##  If the type is not an attributed type, an invalid type is returned.
 ##
 
-proc Type_getModifiedType*(T: CXType): CXType {.
+proc getModifiedType*(T: CXType): CXType {.
     importc: "clang_Type_getModifiedType", cdecl.}
 ## *
 ##  Gets the type contained by this atomic type.
@@ -3545,7 +3545,7 @@ proc Type_getModifiedType*(T: CXType): CXType {.
 ##  If a non-atomic type is passed in, an invalid type is returned.
 ##
 
-proc Type_getValueType(T: CXType): CXType {.
+proc getValueType(T: CXType): CXType {.
     importc: "clang_Type_getValueType", cdecl.}
 ## *
 ##  Return the offset of the field represented by the Cursor.
@@ -3561,28 +3561,28 @@ proc Type_getValueType(T: CXType): CXType {.
 ##    CXTypeLayoutError_InvalidFieldName is returned.
 ##
 
-proc Cursor_getOffsetOfField*(C: CXCursor): clonglong {.
+proc getOffsetOfField*(C: CXCursor): clonglong {.
     importc: "clang_Cursor_getOffsetOfField", cdecl.}
 ## *
 ##  Determine whether the given cursor represents an anonymous
 ##  tag or namespace
 ##
 
-proc Cursor_isAnonymous*(C: CXCursor): cuint {.importc: "clang_Cursor_isAnonymous",
+proc isAnonymous*(C: CXCursor): cuint {.importc: "clang_Cursor_isAnonymous",
     cdecl.}
 ## *
 ##  Determine whether the given cursor represents an anonymous record
 ##  declaration.
 ##
 
-proc Cursor_isAnonymousRecordDecl*(C: CXCursor): cuint {.
+proc isAnonymousRecordDecl*(C: CXCursor): cuint {.
     importc: "clang_Cursor_isAnonymousRecordDecl", cdecl.}
 ## *
 ##  Determine whether the given cursor represents an inline namespace
 ##  declaration.
 ##
 
-proc Cursor_isInlineNamespace*(C: CXCursor): cuint {.
+proc isInlineNamespace*(C: CXCursor): cuint {.
     importc: "clang_Cursor_isInlineNamespace", cdecl.}
 
 type
@@ -3597,7 +3597,7 @@ type
 ##  specialization, or -1 if type \c T is not a template specialization.
 ##
 
-proc Type_getNumTemplateArguments*(T: CXType): cint {.
+proc getNumTemplateArguments*(T: CXType): cint {.
     importc: "clang_Type_getNumTemplateArguments", cdecl.}
 ## *
 ##  Returns the type template argument of a template class specialization
@@ -3607,7 +3607,7 @@ proc Type_getNumTemplateArguments*(T: CXType): cint {.
 ##  template template arguments or variadic packs.
 ##
 
-proc Type_getTemplateArgumentAsType*(T: CXType; i: cuint): CXType {.
+proc getTemplateArgumentAsType*(T: CXType; i: cuint): CXType {.
     importc: "clang_Type_getTemplateArgumentAsType", cdecl.}
 ## *
 ##  Retrieve the ref-qualifier kind of a function or method.
@@ -3616,14 +3616,14 @@ proc Type_getTemplateArgumentAsType*(T: CXType; i: cuint): CXType {.
 ##  or non-C++ declarations, CXRefQualifier_None is returned.
 ##
 
-proc Type_getCXXRefQualifier*(T: CXType): CXRefQualifierKind {.
+proc getCXXRefQualifier*(T: CXType): CXRefQualifierKind {.
     importc: "clang_Type_getCXXRefQualifier", cdecl.}
 ## *
 ##  Returns non-zero if the cursor specifies a Record member that is a
 ##    bitfield.
 ##
 
-proc Cursor_isBitField*(C: CXCursor): cuint {.importc: "clang_Cursor_isBitField",
+proc isBitField*(C: CXCursor): cuint {.importc: "clang_Cursor_isBitField",
     cdecl.}
 ## *
 ##  Returns 1 if the base class specified by the cursor with kind
@@ -3670,7 +3670,7 @@ type
 ##  CX_SC_Invalid is returned else the storage class.
 ##
 
-proc Cursor_getStorageClass*(a1: CXCursor): CX_StorageClass {.
+proc getStorageClass*(a1: CXCursor): CX_StorageClass {.
     importc: "clang_Cursor_getStorageClass", cdecl.}
 ## *
 ##  Determine the number of overloaded declarations referenced by a
@@ -3878,7 +3878,7 @@ proc getCursorSpelling*(a1: CXCursor): CXString {.
 ##  \param options Reserved.
 ##
 
-proc Cursor_getSpellingNameRange*(a1: CXCursor; pieceIndex: cuint; options: cuint): CXSourceRange {.
+proc getSpellingNameRange*(a1: CXCursor; pieceIndex: cuint; options: cuint): CXSourceRange {.
     importc: "clang_Cursor_getSpellingNameRange", cdecl.}
 ## *
 ##  Opaque pointer representing a policy that controls pretty printing
@@ -3886,7 +3886,7 @@ proc Cursor_getSpellingNameRange*(a1: CXCursor; pieceIndex: cuint; options: cuin
 ##
 
 type
-  CXPrintingPolicy* = pointer
+  CXPrintingPolicy* = distinct pointer
 
 ## *
 ##  Properties for the printing policy.
@@ -3920,14 +3920,14 @@ const
 ##  Get a property value for the given printing policy.
 ##
 
-proc PrintingPolicy_getProperty*(Policy: CXPrintingPolicy;
+proc getProperty*(Policy: CXPrintingPolicy;
                                 Property: CXPrintingPolicyProperty): cuint {.
     importc: "clang_PrintingPolicy_getProperty", cdecl.}
 ## *
 ##  Set a property value for the given printing policy.
 ##
 
-proc PrintingPolicy_setProperty*(Policy: CXPrintingPolicy;
+proc setProperty*(Policy: CXPrintingPolicy;
                                 Property: CXPrintingPolicyProperty; Value: cuint) {.
     importc: "clang_PrintingPolicy_setProperty", cdecl.}
 ## *
@@ -3943,7 +3943,7 @@ proc getCursorPrintingPolicy*(a1: CXCursor): CXPrintingPolicy {.
 ##  Release a printing policy.
 ##
 
-proc PrintingPolicy_dispose*(Policy: CXPrintingPolicy) {.
+proc dispose*(Policy: CXPrintingPolicy) {.
     importc: "clang_PrintingPolicy_dispose", cdecl.}
 ## *
 ##  Pretty print declarations.
@@ -4059,7 +4059,7 @@ proc getCanonicalCursor*(a1: CXCursor): CXCursor {.
 ##  otherwise.
 ##
 
-proc Cursor_getObjCSelectorIndex*(a1: CXCursor): cint {.
+proc getObjCSelectorIndex*(a1: CXCursor): cint {.
     importc: "clang_Cursor_getObjCSelectorIndex", cdecl.}
 ## *
 ##  Given a cursor pointing to a C++ method call or an Objective-C
@@ -4073,14 +4073,14 @@ proc Cursor_getObjCSelectorIndex*(a1: CXCursor): cint {.
 ##  method/message, it will return zero.
 ##
 
-proc Cursor_isDynamicCall*(C: CXCursor): cint {.
+proc isDynamicCall*(C: CXCursor): cint {.
     importc: "clang_Cursor_isDynamicCall", cdecl.}
 ## *
 ##  Given a cursor pointing to an Objective-C message or property
 ##  reference, or C++ method call, returns the CXType of the receiver.
 ##
 
-proc Cursor_getReceiverType*(C: CXCursor): CXType {.
+proc getReceiverType*(C: CXCursor): CXType {.
     importc: "clang_Cursor_getReceiverType", cdecl.}
 ## *
 ##  Property attributes for a \c CXCursor_ObjCPropertyDecl.
@@ -4108,21 +4108,21 @@ type
 ##  \param reserved Reserved for future use, pass 0.
 ##
 
-proc Cursor_getObjCPropertyAttributes*(C: CXCursor; reserved: cuint): cuint {.
+proc getObjCPropertyAttributes*(C: CXCursor; reserved: cuint): cuint {.
     importc: "clang_Cursor_getObjCPropertyAttributes", cdecl.}
 ## *
 ##  Given a cursor that represents a property declaration, return the
 ##  name of the method that implements the getter.
 ##
 
-proc Cursor_getObjCPropertyGetterName*(C: CXCursor): CXString {.
+proc getObjCPropertyGetterName*(C: CXCursor): CXString {.
     importc: "clang_Cursor_getObjCPropertyGetterName", cdecl.}
 ## *
 ##  Given a cursor that represents a property declaration, return the
 ##  name of the method that implements the setter, if any.
 ##
 
-proc Cursor_getObjCPropertySetterName*(C: CXCursor): CXString {.
+proc getObjCPropertySetterName*(C: CXCursor): CXString {.
     importc: "clang_Cursor_getObjCPropertySetterName", cdecl.}
 ## *
 ##  'Qualifiers' written next to the return and parameter types in
@@ -4144,7 +4144,7 @@ type
 ##  CXObjCDeclQualifierKind.
 ##
 
-proc Cursor_getObjCDeclQualifiers*(C: CXCursor): cuint {.
+proc getObjCDeclQualifiers*(C: CXCursor): cuint {.
     importc: "clang_Cursor_getObjCDeclQualifiers", cdecl.}
 ## *
 ##  Given a cursor that represents an Objective-C method or property
@@ -4152,13 +4152,13 @@ proc Cursor_getObjCDeclQualifiers*(C: CXCursor): cuint {.
 ##  Returns zero if the cursor is not such a declaration or it is "\@required".
 ##
 
-proc Cursor_isObjCOptional*(C: CXCursor): cuint {.
+proc isObjCOptional*(C: CXCursor): cuint {.
     importc: "clang_Cursor_isObjCOptional", cdecl.}
 ## *
 ##  Returns non-zero if the given cursor is a variadic function or method.
 ##
 
-proc Cursor_isVariadic*(C: CXCursor): cuint {.importc: "clang_Cursor_isVariadic",
+proc isVariadic*(C: CXCursor): cuint {.importc: "clang_Cursor_isVariadic",
     cdecl.}
 ## *
 ##  Returns non-zero if the given cursor points to a symbol marked with
@@ -4174,7 +4174,7 @@ proc Cursor_isVariadic*(C: CXCursor): cuint {.importc: "clang_Cursor_isVariadic"
 ##  non-zero if the 'generated_declaration' is set in the attribute.
 ##
 
-proc Cursor_isExternalSymbol*(C: CXCursor; language: ptr CXString;
+proc isExternalSymbol*(C: CXCursor; language: ptr CXString;
                              definedIn: ptr CXString; isGenerated: ptr cuint): cuint {.
     importc: "clang_Cursor_isExternalSymbol", cdecl.}
 ## *
@@ -4183,14 +4183,14 @@ proc Cursor_isExternalSymbol*(C: CXCursor; language: ptr CXString;
 ##  with whitespace in between.
 ##
 
-proc Cursor_getCommentRange*(C: CXCursor): CXSourceRange {.
+proc getCommentRange*(C: CXCursor): CXSourceRange {.
     importc: "clang_Cursor_getCommentRange", cdecl.}
 ## *
 ##  Given a cursor that represents a declaration, return the associated
 ##  comment text, including comment markers.
 ##
 
-proc Cursor_getRawCommentText*(C: CXCursor): CXString {.
+proc getRawCommentText*(C: CXCursor): CXString {.
     importc: "clang_Cursor_getRawCommentText", cdecl.}
 ## *
 ##  Given a cursor that represents a documentable entity (e.g.,
@@ -4198,7 +4198,7 @@ proc Cursor_getRawCommentText*(C: CXCursor): CXString {.
 ##  first paragraph.
 ##
 
-proc Cursor_getBriefCommentText*(C: CXCursor): CXString {.
+proc getBriefCommentText*(C: CXCursor): CXString {.
     importc: "clang_Cursor_getBriefCommentText", cdecl.}
 ## *
 ##  @}
@@ -4211,21 +4211,21 @@ proc Cursor_getBriefCommentText*(C: CXCursor): CXString {.
 ##  Retrieve the CXString representing the mangled name of the cursor.
 ##
 
-proc Cursor_getMangling*(a1: CXCursor): CXString {.
+proc getMangling*(a1: CXCursor): CXString {.
     importc: "clang_Cursor_getMangling", cdecl.}
 ## *
 ##  Retrieve the CXStrings representing the mangled symbols of the C++
 ##  constructor or destructor at the cursor.
 ##
 
-proc Cursor_getCXXManglings*(a1: CXCursor): ptr CXStringSet {.
+proc getCXXManglings*(a1: CXCursor): ptr CXStringSet {.
     importc: "clang_Cursor_getCXXManglings", cdecl.}
 ## *
 ##  Retrieve the CXStrings representing the mangled symbols of the ObjC
 ##  class interface or implementation at the cursor.
 ##
 
-proc Cursor_getObjCManglings*(a1: CXCursor): ptr CXStringSet {.
+proc getObjCManglings*(a1: CXCursor): ptr CXStringSet {.
     importc: "clang_Cursor_getObjCManglings", cdecl.}
 ## *
 ##  @}
@@ -4239,13 +4239,13 @@ proc Cursor_getObjCManglings*(a1: CXCursor): ptr CXStringSet {.
 ##
 
 type
-  CXModule* = pointer
+  CXModule* = distinct pointer
 
 ## *
 ##  Given a CXCursor_ModuleImportDecl cursor, return the associated module.
 ##
 
-proc Cursor_getModule*(C: CXCursor): CXModule {.importc: "clang_Cursor_getModule",
+proc getModule*(C: CXCursor): CXModule {.importc: "clang_Cursor_getModule",
     cdecl.}
 ## *
 ##  Given a CXFile header file, return the module that contains it, if one
@@ -4260,7 +4260,7 @@ proc getModuleForFile*(a1: CXTranslationUnit; a2: CXFile): CXModule {.
 ##  \returns the module file where the provided module object came from.
 ##
 
-proc Module_getASTFile*(Module: CXModule): CXFile {.
+proc getASTFile*(Module: CXModule): CXFile {.
     importc: "clang_Module_getASTFile", cdecl.}
 ## *
 ##  \param Module a module object.
@@ -4269,7 +4269,7 @@ proc Module_getASTFile*(Module: CXModule): CXFile {.
 ##  e.g. for 'std.vector' it will return the 'std' module.
 ##
 
-proc Module_getParent*(Module: CXModule): CXModule {.
+proc getParent*(Module: CXModule): CXModule {.
     importc: "clang_Module_getParent", cdecl.}
 ## *
 ##  \param Module a module object.
@@ -4278,7 +4278,7 @@ proc Module_getParent*(Module: CXModule): CXModule {.
 ##  will return "vector".
 ##
 
-proc Module_getName*(Module: CXModule): CXString {.importc: "clang_Module_getName",
+proc getName*(Module: CXModule): CXString {.importc: "clang_Module_getName",
     cdecl.}
 ## *
 ##  \param Module a module object.
@@ -4286,7 +4286,7 @@ proc Module_getName*(Module: CXModule): CXString {.importc: "clang_Module_getNam
 ##  \returns the full name of the module, e.g. "std.vector".
 ##
 
-proc Module_getFullName*(Module: CXModule): CXString {.
+proc getFullName*(Module: CXModule): CXString {.
     importc: "clang_Module_getFullName", cdecl.}
 ## *
 ##  \param Module a module object.
@@ -4294,7 +4294,7 @@ proc Module_getFullName*(Module: CXModule): CXString {.
 ##  \returns non-zero if the module is a system one.
 ##
 
-proc Module_isSystem*(Module: CXModule): cint {.importc: "clang_Module_isSystem",
+proc isSystem*(Module: CXModule): cint {.importc: "clang_Module_isSystem",
     cdecl.}
 ## *
 ##  \param Module a module object.
@@ -4302,7 +4302,7 @@ proc Module_isSystem*(Module: CXModule): cint {.importc: "clang_Module_isSystem"
 ##  \returns the number of top level headers associated with this module.
 ##
 
-proc Module_getNumTopLevelHeaders*(a1: CXTranslationUnit; Module: CXModule): cuint {.
+proc getNumTopLevelHeaders*(a1: CXTranslationUnit; Module: CXModule): cuint {.
     importc: "clang_Module_getNumTopLevelHeaders", cdecl.}
 ## *
 ##  \param Module a module object.
@@ -4312,7 +4312,7 @@ proc Module_getNumTopLevelHeaders*(a1: CXTranslationUnit; Module: CXModule): cui
 ##  \returns the specified top level header associated with the module.
 ##
 
-proc Module_getTopLevelHeader*(a1: CXTranslationUnit; Module: CXModule; Index: cuint): CXFile {.
+proc getTopLevelHeader*(a1: CXTranslationUnit; Module: CXModule; Index: cuint): CXFile {.
     importc: "clang_Module_getTopLevelHeader", cdecl.}
 ## *
 ##  @}
@@ -4329,51 +4329,51 @@ proc Module_getTopLevelHeader*(a1: CXTranslationUnit; Module: CXModule; Index: c
 ##  Determine if a C++ constructor is a converting constructor.
 ##
 
-proc CXXConstructor_isConvertingConstructor*(C: CXCursor): cuint {.
+proc isCXXConstructorConvertingConstructor*(C: CXCursor): cuint {.
     importc: "clang_CXXConstructor_isConvertingConstructor", cdecl.}
 ## *
 ##  Determine if a C++ constructor is a copy constructor.
 ##
 
-proc CXXConstructor_isCopyConstructor*(C: CXCursor): cuint {.
+proc isCXXConstructorCopyConstructor*(C: CXCursor): cuint {.
     importc: "clang_CXXConstructor_isCopyConstructor", cdecl.}
 ## *
 ##  Determine if a C++ constructor is the default constructor.
 ##
 
-proc CXXConstructor_isDefaultConstructor*(C: CXCursor): cuint {.
+proc isCXXConstructorDefaultConstructor*(C: CXCursor): cuint {.
     importc: "clang_CXXConstructor_isDefaultConstructor", cdecl.}
 ## *
 ##  Determine if a C++ constructor is a move constructor.
 ##
 
-proc CXXConstructor_isMoveConstructor*(C: CXCursor): cuint {.
+proc isCXXConstructorMoveConstructor*(C: CXCursor): cuint {.
     importc: "clang_CXXConstructor_isMoveConstructor", cdecl.}
 ## *
 ##  Determine if a C++ field is declared 'mutable'.
 ##
 
-proc CXXField_isMutable*(C: CXCursor): cuint {.importc: "clang_CXXField_isMutable",
+proc isCXXFieldMutable*(C: CXCursor): cuint {.importc: "clang_CXXField_isMutable",
     cdecl.}
 ## *
 ##  Determine if a C++ method is declared '= default'.
 ##
 
-proc CXXMethod_isDefaulted*(C: CXCursor): cuint {.
+proc isCXXMethodDefaulted*(C: CXCursor): cuint {.
     importc: "clang_CXXMethod_isDefaulted", cdecl.}
 ## *
 ##  Determine if a C++ member function or member function template is
 ##  pure virtual.
 ##
 
-proc CXXMethod_isPureVirtual*(C: CXCursor): cuint {.
+proc isCXXMethodPureVirtual*(C: CXCursor): cuint {.
     importc: "clang_CXXMethod_isPureVirtual", cdecl.}
 ## *
 ##  Determine if a C++ member function or member function template is
 ##  declared 'static'.
 ##
 
-proc CXXMethod_isStatic*(C: CXCursor): cuint {.importc: "clang_CXXMethod_isStatic",
+proc isCXXMethodStatic*(C: CXCursor): cuint {.importc: "clang_CXXMethod_isStatic",
     cdecl.}
 ## *
 ##  Determine if a C++ member function or member function template is
@@ -4381,27 +4381,27 @@ proc CXXMethod_isStatic*(C: CXCursor): cuint {.importc: "clang_CXXMethod_isStati
 ##  one of the base classes.
 ##
 
-proc CXXMethod_isVirtual*(C: CXCursor): cuint {.
+proc isCXXMethodVirtual*(C: CXCursor): cuint {.
     importc: "clang_CXXMethod_isVirtual", cdecl.}
 ## *
 ##  Determine if a C++ record is abstract, i.e. whether a class or struct
 ##  has a pure virtual member function.
 ##
 
-proc CXXRecord_isAbstract*(C: CXCursor): cuint {.
+proc isCXXRecordAbstract*(C: CXCursor): cuint {.
     importc: "clang_CXXRecord_isAbstract", cdecl.}
 ## *
 ##  Determine if an enum declaration refers to a scoped enum.
 ##
 
-proc EnumDecl_isScoped*(C: CXCursor): cuint {.importc: "clang_EnumDecl_isScoped",
+proc isEnumDeclScoped*(C: CXCursor): cuint {.importc: "clang_EnumDecl_isScoped",
     cdecl.}
 ## *
 ##  Determine if a C++ member function or member function template is
 ##  declared 'const'.
 ##
 
-proc CXXMethod_isConst*(C: CXCursor): cuint {.importc: "clang_CXXMethod_isConst",
+proc isCXXMethodConst*(C: CXCursor): cuint {.importc: "clang_CXXMethod_isConst",
     cdecl.}
 ## *
 ##  Given a cursor that represents a template, determine
@@ -4641,7 +4641,7 @@ proc annotateTokens*(TU: CXTranslationUnit; Tokens: ptr CXToken; NumTokens: cuin
 ##  Free the given set of tokens.
 ##
 
-proc disposeTokens*(TU: CXTranslationUnit; Tokens: ptr CXToken; NumTokens: cuint) {.
+proc dispose*(TU: CXTranslationUnit; Tokens: ptr CXToken; NumTokens: cuint) {.
     importc: "clang_disposeTokens", cdecl.}
 ## *
 ##  @}
@@ -4695,7 +4695,7 @@ proc executeOnThread*(fn: proc (a1: pointer); user_data: pointer; stack_size: cu
 ##
 
 type
-  CXCompletionString* = pointer
+  CXCompletionString* = distinct pointer
 
 ## *
 ##  A single result of code completion.
@@ -5328,7 +5328,7 @@ proc sortCodeCompletionResults*(Results: ptr CXCompletionResult; NumResults: cui
 ##  Free the given set of code-completion results.
 ##
 
-proc disposeCodeCompleteResults*(Results: ptr CXCodeCompleteResults) {.
+proc dispose*(Results: ptr CXCodeCompleteResults) {.
     importc: "clang_disposeCodeCompleteResults", cdecl.}
 ## *
 ##  Determine the number of diagnostics produced prior to the
@@ -5469,7 +5469,7 @@ type
 ##
 
 type
-  CXEvalResult* = pointer
+  CXEvalResult* = distinct pointer
 
 ## *
 ##  If cursor is a statement declaration tries to evaluate the
@@ -5477,20 +5477,20 @@ type
 ##  into its corresponding type.
 ##
 
-proc Cursor_Evaluate*(C: CXCursor): CXEvalResult {.importc: "clang_Cursor_Evaluate",
+proc evaluate*(C: CXCursor): CXEvalResult {.importc: "clang_Cursor_Evaluate",
     cdecl.}
 ## *
 ##  Returns the kind of the evaluated result.
 ##
 
-proc EvalResult_getKind*(E: CXEvalResult): CXEvalResultKind {.
+proc getKind*(E: CXEvalResult): CXEvalResultKind {.
     importc: "clang_EvalResult_getKind", cdecl.}
 ## *
 ##  Returns the evaluation result as integer if the
 ##  kind is Int.
 ##
 
-proc EvalResult_getAsInt*(E: CXEvalResult): cint {.
+proc getAsInt*(E: CXEvalResult): cint {.
     importc: "clang_EvalResult_getAsInt", cdecl.}
 ## *
 ##  Returns the evaluation result as a long long integer if the
@@ -5498,28 +5498,28 @@ proc EvalResult_getAsInt*(E: CXEvalResult): cint {.
 ##  returned with clang_EvalResult_getAsInt.
 ##
 
-proc EvalResult_getAsLongLong*(E: CXEvalResult): clonglong {.
+proc getAsLongLong*(E: CXEvalResult): clonglong {.
     importc: "clang_EvalResult_getAsLongLong", cdecl.}
 ## *
 ##  Returns a non-zero value if the kind is Int and the evaluation
 ##  result resulted in an unsigned integer.
 ##
 
-proc EvalResult_isUnsignedInt*(E: CXEvalResult): cuint {.
+proc isUnsignedInt*(E: CXEvalResult): cuint {.
     importc: "clang_EvalResult_isUnsignedInt", cdecl.}
 ## *
 ##  Returns the evaluation result as an unsigned integer if
 ##  the kind is Int and clang_EvalResult_isUnsignedInt is non-zero.
 ##
 
-proc EvalResult_getAsUnsigned*(E: CXEvalResult): culonglong {.
+proc getAsUnsigned*(E: CXEvalResult): culonglong {.
     importc: "clang_EvalResult_getAsUnsigned", cdecl.}
 ## *
 ##  Returns the evaluation result as double if the
 ##  kind is double.
 ##
 
-proc EvalResult_getAsDouble*(E: CXEvalResult): cdouble {.
+proc getAsDouble*(E: CXEvalResult): cdouble {.
     importc: "clang_EvalResult_getAsDouble", cdecl.}
 ## *
 ##  Returns the evaluation result as a constant string if the
@@ -5528,13 +5528,13 @@ proc EvalResult_getAsDouble*(E: CXEvalResult): cdouble {.
 ##  by clang_Cursor_Evaluate.
 ##
 
-proc EvalResult_getAsStr*(E: CXEvalResult): cstring {.
+proc getAsStr*(E: CXEvalResult): cstring {.
     importc: "clang_EvalResult_getAsStr", cdecl.}
 ## *
 ##  Disposes the created Eval memory.
 ##
 
-proc EvalResult_dispose*(E: CXEvalResult) {.importc: "clang_EvalResult_dispose",
+proc dispose*(E: CXEvalResult) {.importc: "clang_EvalResult_dispose",
     cdecl.}
 ## *
 ##  @}
@@ -5548,7 +5548,7 @@ proc EvalResult_dispose*(E: CXEvalResult) {.importc: "clang_EvalResult_dispose",
 ##
 
 type
-  CXRemapping* = pointer
+  CXRemapping* = distinct pointer
 
 ## *
 ##  Retrieve a remapping.
@@ -5578,7 +5578,7 @@ proc getRemappingsFromFileList*(filePaths: cstringArray; numFiles: cuint): CXRem
 ##  Determine the number of remappings.
 ##
 
-proc remap_getNumFiles*(a1: CXRemapping): cuint {.
+proc getNumFiles*(a1: CXRemapping): cuint {.
     importc: "clang_remap_getNumFiles", cdecl.}
 ## *
 ##  Get the original and the associated filename from the remapping.
@@ -5589,14 +5589,14 @@ proc remap_getNumFiles*(a1: CXRemapping): cuint {.
 ##  is associated with.
 ##
 
-proc remap_getFilenames*(a1: CXRemapping; index: cuint; original: ptr CXString;
+proc getFilenames*(a1: CXRemapping; index: cuint; original: ptr CXString;
                         transformed: ptr CXString) {.
     importc: "clang_remap_getFilenames", cdecl.}
 ## *
 ##  Dispose the remapping.
 ##
 
-proc remap_dispose*(a1: CXRemapping) {.importc: "clang_remap_dispose",
+proc dispose*(a1: CXRemapping) {.importc: "clang_remap_dispose",
                                     cdecl.}
 ## *
 ##  @}
@@ -5668,14 +5668,14 @@ proc findIncludesInFile*(TU: CXTranslationUnit; file: CXFile;
 ##
 
 type
-  CXIdxClientFile* = pointer
+  CXIdxClientFile* = distinct pointer
 
 ## *
 ##  The client's data object that is associated with a semantic entity.
 ##
 
 type
-  CXIdxClientEntity* = pointer
+  CXIdxClientEntity* = distinct pointer
 
 ## *
 ##  The client's data object that is associated with a semantic container
@@ -5683,7 +5683,7 @@ type
 ##
 
 type
-  CXIdxClientContainer* = pointer
+  CXIdxClientContainer* = distinct pointer
 
 ## *
 ##  The client's data object that is associated with an AST file (PCH
@@ -5691,7 +5691,7 @@ type
 ##
 
 type
-  CXIdxClientASTFile* = pointer
+  CXIdxClientASTFile* = distinct pointer
 
 ## *
 ##  Source location passed to index callbacks.
@@ -5988,47 +5988,47 @@ type
                                a2: ptr CXIdxEntityRefInfo)
 
 
-proc index_isEntityObjCContainerKind*(a1: CXIdxEntityKind): cint {.
+proc isEntityObjCContainerKind*(a1: CXIdxEntityKind): cint {.
     importc: "clang_index_isEntityObjCContainerKind", cdecl.}
-proc index_getObjCContainerDeclInfo*(a1: ptr CXIdxDeclInfo): ptr CXIdxObjCContainerDeclInfo {.
+proc getObjCContainerDeclInfo*(a1: ptr CXIdxDeclInfo): ptr CXIdxObjCContainerDeclInfo {.
     importc: "clang_index_getObjCContainerDeclInfo", cdecl.}
-proc index_getObjCInterfaceDeclInfo*(a1: ptr CXIdxDeclInfo): ptr CXIdxObjCInterfaceDeclInfo {.
+proc getObjCInterfaceDeclInfo*(a1: ptr CXIdxDeclInfo): ptr CXIdxObjCInterfaceDeclInfo {.
     importc: "clang_index_getObjCInterfaceDeclInfo", cdecl.}
-proc index_getObjCCategoryDeclInfo*(a1: ptr CXIdxDeclInfo): ptr CXIdxObjCCategoryDeclInfo {.
+proc getObjCCategoryDeclInfo*(a1: ptr CXIdxDeclInfo): ptr CXIdxObjCCategoryDeclInfo {.
     importc: "clang_index_getObjCCategoryDeclInfo", cdecl.}
-proc index_getObjCProtocolRefListInfo*(a1: ptr CXIdxDeclInfo): ptr CXIdxObjCProtocolRefListInfo {.
+proc getObjCProtocolRefListInfo*(a1: ptr CXIdxDeclInfo): ptr CXIdxObjCProtocolRefListInfo {.
     importc: "clang_index_getObjCProtocolRefListInfo", cdecl.}
-proc index_getObjCPropertyDeclInfo*(a1: ptr CXIdxDeclInfo): ptr CXIdxObjCPropertyDeclInfo {.
+proc getObjCPropertyDeclInfo*(a1: ptr CXIdxDeclInfo): ptr CXIdxObjCPropertyDeclInfo {.
     importc: "clang_index_getObjCPropertyDeclInfo", cdecl.}
-proc index_getIBOutletCollectionAttrInfo*(a1: ptr CXIdxAttrInfo): ptr CXIdxIBOutletCollectionAttrInfo {.
+proc getIBOutletCollectionAttrInfo*(a1: ptr CXIdxAttrInfo): ptr CXIdxIBOutletCollectionAttrInfo {.
     importc: "clang_index_getIBOutletCollectionAttrInfo", cdecl.}
-proc index_getCXXClassDeclInfo*(a1: ptr CXIdxDeclInfo): ptr CXIdxCXXClassDeclInfo {.
+proc getCXXClassDeclInfo*(a1: ptr CXIdxDeclInfo): ptr CXIdxCXXClassDeclInfo {.
     importc: "clang_index_getCXXClassDeclInfo", cdecl.}
 ## *
 ##  For retrieving a custom CXIdxClientContainer attached to a
 ##  container.
 ##
 
-proc index_getClientContainer*(a1: ptr CXIdxContainerInfo): CXIdxClientContainer {.
+proc getClientContainer*(a1: ptr CXIdxContainerInfo): CXIdxClientContainer {.
     importc: "clang_index_getClientContainer", cdecl.}
 ## *
 ##  For setting a custom CXIdxClientContainer attached to a
 ##  container.
 ##
 
-proc index_setClientContainer*(a1: ptr CXIdxContainerInfo; a2: CXIdxClientContainer) {.
+proc setClientContainer*(a1: ptr CXIdxContainerInfo; a2: CXIdxClientContainer) {.
     importc: "clang_index_setClientContainer", cdecl.}
 ## *
 ##  For retrieving a custom CXIdxClientEntity attached to an entity.
 ##
 
-proc index_getClientEntity*(a1: ptr CXIdxEntityInfo): CXIdxClientEntity {.
+proc getClientEntity*(a1: ptr CXIdxEntityInfo): CXIdxClientEntity {.
     importc: "clang_index_getClientEntity", cdecl.}
 ## *
 ##  For setting a custom CXIdxClientEntity attached to an entity.
 ##
 
-proc index_setClientEntity*(a1: ptr CXIdxEntityInfo; a2: CXIdxClientEntity) {.
+proc setClientEntity*(a1: ptr CXIdxEntityInfo; a2: CXIdxClientEntity) {.
     importc: "clang_index_setClientEntity", cdecl.}
 ## *
 ##  An indexing action/session, to be applied to one or multiple
@@ -6036,7 +6036,7 @@ proc index_setClientEntity*(a1: ptr CXIdxEntityInfo; a2: CXIdxClientEntity) {.
 ##
 
 type
-  CXIndexAction* = pointer
+  CXIndexAction* = distinct pointer
 
 ## *
 ##  An indexing action/session, to be applied to one or multiple
@@ -6045,7 +6045,7 @@ type
 ##  \param CIdx The index object with which the index action will be associated.
 ##
 
-proc IndexAction_create*(CIdx: CXIndex): CXIndexAction {.
+proc createIndexAction*(CIdx: CXIndex): CXIndexAction {.
     importc: "clang_IndexAction_create", cdecl.}
 ## *
 ##  Destroy the given index action.
@@ -6054,7 +6054,7 @@ proc IndexAction_create*(CIdx: CXIndex): CXIndexAction {.
 ##  created within that index action have been destroyed.
 ##
 
-proc IndexAction_dispose*(a1: CXIndexAction) {.
+proc dispose*(a1: CXIndexAction) {.
     importc: "clang_IndexAction_dispose", cdecl.}
 type ## *
     ##  Used to indicate that no special indexing options are needed.
@@ -6165,7 +6165,7 @@ proc indexTranslationUnit*(a1: CXIndexAction; client_data: CXClientData;
 ##  retrieves the location of the argument.
 ##
 
-proc indexLoc_getFileLocation*(loc: CXIdxLoc; indexFile: ptr CXIdxClientFile;
+proc getFileLocation*(loc: CXIdxLoc; indexFile: ptr CXIdxClientFile;
                               file: ptr CXFile; line: ptr cuint; column: ptr cuint;
                               offset: ptr cuint) {.
     importc: "clang_indexLoc_getFileLocation", cdecl.}
@@ -6173,7 +6173,7 @@ proc indexLoc_getFileLocation*(loc: CXIdxLoc; indexFile: ptr CXIdxClientFile;
 ##  Retrieve the CXSourceLocation represented by the given CXIdxLoc.
 ##
 
-proc indexLoc_getCXSourceLocation*(loc: CXIdxLoc): CXSourceLocation {.
+proc getCXSourceLocation*(loc: CXIdxLoc): CXSourceLocation {.
     importc: "clang_indexLoc_getCXSourceLocation", cdecl.}
 ## *
 ##  Visitor invoked for each field found by a traversal.
@@ -6211,7 +6211,7 @@ type
 ##  prematurely by the visitor returning \c CXFieldVisit_Break.
 ##
 
-proc Type_visitFields*(T: CXType; visitor: CXFieldVisitor; client_data: CXClientData): cuint {.
+proc visitFields*(T: CXType; visitor: CXFieldVisitor; client_data: CXClientData): cuint {.
     importc: "clang_Type_visitFields", cdecl.}
 ## *
 ##  @}

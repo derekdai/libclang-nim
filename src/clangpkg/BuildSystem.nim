@@ -31,7 +31,7 @@ proc getBuildSessionTimestamp*(): culonglong {.
 ##
 
 type
-  CXVirtualFileOverlay* = pointer # CXVirtualFileOverlayImpl
+  CXVirtualFileOverlay* = distinct pointer # CXVirtualFileOverlayImpl
 
 ## *
 ##  Create a \c CXVirtualFileOverlay object.
@@ -40,7 +40,7 @@ type
 ##  \param options is reserved, always pass 0.
 ##
 
-proc VirtualFileOverlay_create*(options: cuint): CXVirtualFileOverlay {.
+proc createVirtualFileOverlay*(options: cuint): CXVirtualFileOverlay {.
     importc: "clang_VirtualFileOverlay_create", cdecl.}
 ## *
 ##  Map an absolute virtual file path to an absolute real one.
@@ -48,7 +48,7 @@ proc VirtualFileOverlay_create*(options: cuint): CXVirtualFileOverlay {.
 ##  \returns 0 for success, non-zero to indicate an error.
 ##
 
-proc VirtualFileOverlay_addFileMapping*(a1: CXVirtualFileOverlay;
+proc addFileMapping*(a1: CXVirtualFileOverlay;
                                        virtualPath: cstring; realPath: cstring): CXErrorCode {.
     importc: "clang_VirtualFileOverlay_addFileMapping", cdecl.}
 ## *
@@ -58,7 +58,7 @@ proc VirtualFileOverlay_addFileMapping*(a1: CXVirtualFileOverlay;
 ##  \returns 0 for success, non-zero to indicate an error.
 ##
 
-proc VirtualFileOverlay_setCaseSensitivity*(a1: CXVirtualFileOverlay;
+proc setCaseSensitivity*(a1: CXVirtualFileOverlay;
     caseSensitive: cint): CXErrorCode {.importc: "clang_VirtualFileOverlay_setCaseSensitivity",
                                      cdecl.}
 ## *
@@ -71,7 +71,7 @@ proc VirtualFileOverlay_setCaseSensitivity*(a1: CXVirtualFileOverlay;
 ##  \returns 0 for success, non-zero to indicate an error.
 ##
 
-proc VirtualFileOverlay_writeToBuffer*(a1: CXVirtualFileOverlay; options: cuint;
+proc writeToBuffer*(a1: CXVirtualFileOverlay; options: cuint;
                                       out_buffer_ptr: cstringArray;
                                       out_buffer_size: ptr cuint): CXErrorCode {.
     importc: "clang_VirtualFileOverlay_writeToBuffer", cdecl.}
@@ -87,14 +87,14 @@ proc free*(buffer: pointer) {.importc: "clang_free", cdecl.}
 ##  Dispose a \c CXVirtualFileOverlay object.
 ##
 
-proc VirtualFileOverlay_dispose*(a1: CXVirtualFileOverlay) {.
+proc dispose*(a1: CXVirtualFileOverlay) {.
     importc: "clang_VirtualFileOverlay_dispose", cdecl.}
 ## *
 ##  Object encapsulating information about a module.map file.
 ##
 
 type
-  CXModuleMapDescriptor* = pointer # CXModuleMapDescriptorImpl
+  CXModuleMapDescriptor* = distinct pointer # CXModuleMapDescriptorImpl
 
 ## *
 ##  Create a \c CXModuleMapDescriptor object.
@@ -103,14 +103,14 @@ type
 ##  \param options is reserved, always pass 0.
 ##
 
-proc ModuleMapDescriptor_create*(options: cuint): CXModuleMapDescriptor {.
+proc createModuleMapDescriptor*(options: cuint): CXModuleMapDescriptor {.
     importc: "clang_ModuleMapDescriptor_create", cdecl.}
 ## *
 ##  Sets the framework module name that the module.map describes.
 ##  \returns 0 for success, non-zero to indicate an error.
 ##
 
-proc ModuleMapDescriptor_setFrameworkModuleName*(a1: CXModuleMapDescriptor;
+proc setFrameworkModuleName*(a1: CXModuleMapDescriptor;
     name: cstring): CXErrorCode {.importc: "clang_ModuleMapDescriptor_setFrameworkModuleName",
                                cdecl.}
 ## *
@@ -118,7 +118,7 @@ proc ModuleMapDescriptor_setFrameworkModuleName*(a1: CXModuleMapDescriptor;
 ##  \returns 0 for success, non-zero to indicate an error.
 ##
 
-proc ModuleMapDescriptor_setUmbrellaHeader*(a1: CXModuleMapDescriptor;
+proc setUmbrellaHeader*(a1: CXModuleMapDescriptor;
     name: cstring): CXErrorCode {.importc: "clang_ModuleMapDescriptor_setUmbrellaHeader",
                                cdecl.}
 ## *
@@ -131,7 +131,7 @@ proc ModuleMapDescriptor_setUmbrellaHeader*(a1: CXModuleMapDescriptor;
 ##  \returns 0 for success, non-zero to indicate an error.
 ##
 
-proc ModuleMapDescriptor_writeToBuffer*(a1: CXModuleMapDescriptor; options: cuint;
+proc writeToBuffer*(a1: CXModuleMapDescriptor; options: cuint;
                                        out_buffer_ptr: cstringArray;
                                        out_buffer_size: ptr cuint): CXErrorCode {.
     importc: "clang_ModuleMapDescriptor_writeToBuffer", cdecl.}
@@ -139,7 +139,7 @@ proc ModuleMapDescriptor_writeToBuffer*(a1: CXModuleMapDescriptor; options: cuin
 ##  Dispose a \c CXModuleMapDescriptor object.
 ##
 
-proc ModuleMapDescriptor_dispose*(a1: CXModuleMapDescriptor) {.
+proc dispose*(a1: CXModuleMapDescriptor) {.
     importc: "clang_ModuleMapDescriptor_dispose", cdecl.}
 ## *
 ##  @}

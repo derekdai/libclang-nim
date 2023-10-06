@@ -17,17 +17,17 @@ import "Index.nim"
 ## LLVM_CLANG_C_EXTERN_C_BEGIN
 
 typedef
-  CXRewriter* = pointer
+  CXRewriter* = distinct pointer
 
 ## *
 ##  Create CXRewriter.
 ##
-proc CXRewriter_create*(U: CXTranslationUnit): CXRewriter {.importc: "clang_CXRewriter_create", cdecl.}
+proc createCXRewriter*(U: CXTranslationUnit): CXRewriter {.importc: "clang_CXRewriter_create", cdecl.}
 
 ## *
 ##  Insert the specified string at the specified location in the original buffer.
 ##
-proc CXRewriter_insertTextBefore*(rew: CXRewriter,
+proc insertTextBefore*(rew: CXRewriter,
                                   loc: CXSourceLocation,
                                   insert: cstring) {.importc: "clang_CXRewriter_insertTextBefore", cdecl.}
 
@@ -35,30 +35,30 @@ proc CXRewriter_insertTextBefore*(rew: CXRewriter,
 ##  Replace the specified range of characters in the input with the specified
 ##  replacement.
 ##
-proc CXRewriter_replaceText*(rew: CXRewriter,
+proc replaceText*(rew: CXRewriter,
                              toBeReplaced: CXSourceRange,
                              replacement: cstring) {.importc: "clang_CXRewriter_replaceText", cdecl.}
 
 ## *
 ##  Remove the specified range.
 ##
-proc CXRewriter_removeText*(rew: CXRewriter,
+proc removeText*(rew: CXRewriter,
                             toBeRemoved: CXSourceRange) {.importc: "clang_CXRewriter_removeText", cdecl.}
 
 ## *
 ##  Save all changed files to disk.
 ##  Returns 1 if any files were not saved successfully, returns 0 otherwise.
 ##
-proc CXRewriter_overwriteChangedFiles*(rew: CXRewriter): cint {.importc: "clang_CXRewriter_overwriteChangedFiles", cdecl.}
+proc overwriteChangedFiles*(rew: CXRewriter): cint {.importc: "clang_CXRewriter_overwriteChangedFiles", cdecl.}
 
 ## *
 ##  Write out rewritten version of the main file to stdout.
 ##
-proc CXRewriter_writeMainFileToStdOut*(rew: CXRewriter) {.importc: "clang_CXRewriter_writeMainFileToStdOut", cdecl.}
+proc writeMainFileToStdOut*(rew: CXRewriter) {.importc: "clang_CXRewriter_writeMainFileToStdOut", cdecl.}
 
 ## *
 ##  Free the given CXRewriter.
 ##
-proc CXRewriter_dispose*(rew: CXRewriter) {.importc: "clang_CXRewriter_dispose", cdecl.}
+proc dispose*(rew: CXRewriter) {.importc: "clang_CXRewriter_dispose", cdecl.}
 
 ## LLVM_CLANG_C_EXTERN_C_END
