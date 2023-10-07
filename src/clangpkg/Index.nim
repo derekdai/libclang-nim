@@ -5446,7 +5446,7 @@ proc toggleCrashRecovery*(isEnabled: cuint) {.importc: "clang_toggleCrashRecover
 type
   CXInclusionVisitor* = proc (included_file: CXFile;
                            inclusion_stack: ptr CXSourceLocation;
-                           include_len: cuint; client_data: CXClientData)
+                           include_len: cuint; client_data: CXClientData) {.cdecl.}
 
 ## *
 ##  Visit the set of preprocessor inclusions in a translation unit.
@@ -6188,7 +6188,7 @@ proc getCXSourceLocation*(loc: CXIdxLoc): CXSourceLocation {.
 ##
 
 type
-  CXFieldVisitor* = proc (C: CXCursor; client_data: CXClientData): CXVisitorResult
+  CXFieldVisitor* = proc (C: CXCursor; client_data: CXClientData): CXVisitorResult {.cdecl.}
 
 
 ## *
